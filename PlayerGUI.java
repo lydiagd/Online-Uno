@@ -1,4 +1,6 @@
-package project;
+package online-uno;
+
+//Author: Patrick Jarvis
 
 import java.awt.Font;
 import java.awt.Image;
