@@ -1,4 +1,3 @@
-package online_uno;
 
 public class Normal_Card extends Card{
 	
@@ -9,10 +8,7 @@ public class Normal_Card extends Card{
 		number = num;
 	}
 
-	@Override
-	public void action() {
-		//normal cards don't have an action
-	}
+
 
 	@Override
 	public String stringout() {
@@ -20,6 +16,20 @@ public class Normal_Card extends Card{
 		s = s.concat(super.color + " " + Integer.toString(number));
 		
 		return s;
+	}
+
+
+
+	@Override
+	public String getColor() {
+		return super.color;
+	}
+
+
+
+	@Override
+	public int getNumber() {
+		return number;
 	}
 
 }

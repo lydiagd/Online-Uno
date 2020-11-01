@@ -1,7 +1,6 @@
 /**
  * 
  */
-package online_uno;
 
 /**
  * @author Lydia
@@ -15,7 +14,8 @@ public abstract class Card {
 			color = col;
 		}
 		
-		public abstract void action();
+		public abstract String getColor();
+		public abstract int getNumber();
 		public abstract String stringout();
 
 }
