@@ -1,3 +1,4 @@
+import java.util.Queue;
 import java.util.Stack;
 
 public class GameTable {
@@ -47,9 +48,9 @@ public class GameTable {
 			 return discardPile.peek();
 		 }
 		 
-		 public Card discard(Card c) {
+		 public void discard(Card c) {
 			//discard(Card c) -> add to discard stack, called from player's hand
-			 return discardPile.remove(0);
+			 discardPile.add(c);
 			
 		 }
 		  
@@ -59,7 +60,7 @@ public class GameTable {
 
 	public class DrawStack extends Deck {
 		
-		Stack<Card> drawPile;
+		Queue<Card> drawPile;
 		
 		public DrawStack(Deck d) { //initialize with the remaining cards of a deck.
 			
@@ -76,7 +77,7 @@ public class GameTable {
 		  //top
 		public Card draw() {
 			
-			return drawPile.pop();
+			return drawPile.remove();
 		}
 		  //draw() -> pop top of draw stack, called from player
 	}

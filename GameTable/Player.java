@@ -1,4 +1,3 @@
-package online_uno;
 
 import java.util.*;
 
@@ -17,12 +16,12 @@ public class Player extends Thread {
 
 	private void play() {
 		//read in card name
-		Card top = GetDiscardStack().top();
+		Card top = table.discardStk.top();
 		ChooseMove(HasViableMoves(top.getColor(), top.getNumber()));
 		
 		if(IsHandEmpty()) {
 			//tally points
-			ArrayList<Card> discardStk = GetDiscardStack();
+			ArrayList<Card> discardStk = table.discardStk;
 			for(Card c: discardStk) {
 				if(c.getNumber() == -1) {
 					AddToScore(50);
@@ -82,7 +81,7 @@ public class Player extends Thread {
 	}
 	
 	private void PlayCard() {
-		Card c;
+		Card c = null;
 		Scanner sc = new Scanner(System.in);
 		String cardName;
 		char color;
@@ -98,7 +97,7 @@ public class Player extends Thread {
 			}
 			for(Card card: hand) { //obtain card from hand
 				if((number == -1 && card.getNumber() == -1)
-				|| (number == card.getNumber() && color == card.getColor.charAt(0))) {
+				|| (number == card.getNumber() && color == card.getColor().charAt(0))) {
 					c = card;
 				}
 			}
@@ -109,11 +108,11 @@ public class Player extends Thread {
 
 		
 		hand.remove(c);
-		table.GetDiscardStack.add(c);
+		table.discardStk.discard(c);
 	}
 	
 	private void DrawCard() {
-		Card c = GetDrawStack.remove(c);
+		Card c = table.drawStk.draw();
 		hand.add(c);
 	}
 	
