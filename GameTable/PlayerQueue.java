@@ -29,6 +29,10 @@ public class PlayerQueue {
 		return q.size();
 	}
 	
+	public Player Top() {
+		return q.top();
+	}
+	
 	public Semaphore GetSemaphore() {
 		return semaphore;
 	}

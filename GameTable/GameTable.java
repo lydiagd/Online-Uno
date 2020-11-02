@@ -1,15 +1,12 @@
 import java.util.Stack;
 
-import online_uno.Card;
-import online_uno.Deck;
-
 public class GameTable {
 	 public DiscardStack discardStk;
 	 public DrawStack drawStk;
-	 private PlayerVector players; //keep track of all players in the game (PlayerVector class)
+	 private PlayerQueue players; //keep track of all players in the game (PlayerVector class)
 	 
 	 
-	 GameTable(PlayerVector p){ //game table constructor hosting deck, draw pile, and discard pile
+	 GameTable(PlayerQueue p){ //game table constructor hosting deck, draw pile, and discard pile
 		 players = p;
 		 
 		 Deck d = new Deck();
@@ -29,26 +26,30 @@ public class GameTable {
 	 public void Deal(){
 		 
 		 //iterate through players vector and add to hand
-		 //for (Player p : PlayerVector) --> remove top from draw stack and put into player hands
+//		 for(int i = 0; i < players.Size(); i++)
+//		 {
+//			 Player p = players.Top();
+//			 
+//		 }
 		 
 		 
 	 }
 	 
 	 
 	 public class DiscardStack extends Deck {
-		 Stack discardPile;
+		 Stack<Card> discardPile;
 		 
 		 DiscardStack(){
 			 discardPile = new Stack();
 		 }
 		  
 		 public Card top(){
-			 
+			 return discardPile.peek();
 		 }
 		 
-		 public void discard(Card c) {
+		 public Card discard(Card c) {
 			//discard(Card c) -> add to discard stack, called from player's hand
-			 
+			 return discardPile.remove(0);
 			
 		 }
 		  
