@@ -27,11 +27,11 @@ public class GameTable {
 	 public void Deal(){
 		 
 		 //iterate through players vector and add to hand
-//		 for(int i = 0; i < players.Size(); i++)
-//		 {
-//			 Player p = players.Top();
-//			 
-//		 }
+		 for(int i = 0; i < players.Size(); i++)
+		 {
+			 Player p = players.Top();
+			 
+		 }
 		 
 		 
 	 }

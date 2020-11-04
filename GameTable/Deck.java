@@ -2,6 +2,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Queue;
 
 public class Deck {
   
@@ -30,6 +31,13 @@ public class Deck {
   public void shuffle() { //ref: https://www.geeksforgeeks.org/shuffle-or-randomize-a-list-in-java/
     Collections.shuffle(cards);
 
+  }
+  
+  public Queue<Card> reShuffle(Queue<Card> q)
+  {
+	  Collections.shuffle((List<?>) q);
+	  
+	  return q;
   }
   
   public int size() { //return size of current deck

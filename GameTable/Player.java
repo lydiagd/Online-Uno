@@ -2,16 +2,15 @@
 import java.util.*;
 
 public class Player extends Thread {
-	private ArrayList<Card> hand;
-	private Integer id;
+	private ArrayList<Card> hand = new ArrayList<Card>();
+	private String username;
 	private Integer score;
 	private PlayerQueue playerQueue;
 	
 	private GameTable table;
 	
-	public Player(Integer id, ArrayList<Card> hand) {
-		this.id = id;
-		this.hand = hand;
+	public Player(String id) {
+		this.username = id;
 	}
 
 	private void play() {
@@ -117,8 +116,8 @@ public class Player extends Thread {
 	}
 	
 	
-	public Integer GetID() {
-		return id;
+	public String GetID() {
+		return username;
 	}
 	
 	public ArrayList<Card> GetHand() {

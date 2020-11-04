@@ -4,7 +4,7 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class PlayerQueue {
-	private ArrayList<Player> q;
+	private Queue<Player> q = new LinkedList<>();
 	private Semaphore semaphore;
 	
 	//4 players
@@ -30,7 +30,7 @@ public class PlayerQueue {
 	}
 	
 	public Player Top() {
-		return q.top();
+		return q.peek();
 	}
 	
 	public Semaphore GetSemaphore() {
@@ -38,7 +38,7 @@ public class PlayerQueue {
 	}
 	
 	public void NextTurn() {
-		Player p = q.remove(0);
+		Player p = q.remove();
 		q.add(p);
 	}
 }
