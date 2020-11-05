@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -21,19 +22,40 @@ public class GameTable {
 		 
 		 Deal(); //call deal to pass out cards to players
 		 
+		 //now place top card on discard pile
+		 discardStk.discard(drawStk.draw());
+		 while(discardStk.top().getNumber() == -1) //if top is wild, keep drawing
+		 {
+			 if(drawStk.size() > 0)
+			 {
+				 discardStk.discard(drawStk.draw());
+			 }
+			 throw new IllegalArgumentException("Something went wrong in gametable constructor");
+		 }
+		 
 		 
 	 }
 	 
 	 public void Deal(){
 		 
 		 //iterate through players vector and add to hand
-		 for(int i = 0; i < players.Size(); i++)
+		 int num = players.Size();
+		 for(int i = 0; i < num; i++)
 		 {
 			 Player p = players.Top();
+			 for(int c = 0; c < 7; c++)
+			 {
+				 p.GetHand().add(drawStk.draw());
+			 }
 			 
+			 players.NextTurn();
 		 }
 		 
 		 
+	 }
+	 
+	 public PlayerQueue getPlayers() {
+		 return players;
 	 }
 	 
 	 
@@ -45,7 +67,11 @@ public class GameTable {
 		 }
 		  
 		 public Card top(){
-			 return discardPile.peek();
+			 if(discardPile.size() > 0)
+			 {
+				 return discardPile.peek();
+			 }
+			 else return null;
 		 }
 		 
 		 public void discard(Card c) {
@@ -63,10 +89,12 @@ public class GameTable {
 		Queue<Card> drawPile;
 		
 		public DrawStack(Deck d) { //initialize with the remaining cards of a deck.
-			
-			for(int i = 0; i < d.size(); i++)
+			drawPile = new LinkedList<>();
+			int deckSize = d.size();
+			for(int i = 0; i < deckSize; i++)
 			{
-				drawPile.add(d.DealOut()); //d.dealout will remove the card from the deck and return it
+				Card c = d.DealOut();
+				drawPile.add(c); //d.dealout will remove the card from the deck and return it
 			}
 			
 		}
