@@ -1,4 +1,4 @@
-**Overview**  
+# Database
 Hey all! Here is a breakdown on what the Database contains. If you want to run this in Eclipse, you will need to add the JDBC jar file that we needed for lab 10.
 
 **db_connect.java**  
