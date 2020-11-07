@@ -16,19 +16,19 @@ public class Player extends Thread {
 	private void play() {
 		//read in card name
 		Card top = table.discardStk.top();
-		ChooseMove(HasViableMoves(top.getColor(), top.getNumber()));
-		
-		if(IsHandEmpty()) {
-			//tally points
-			ArrayList<Card> discardStk = table.discardStk;
-			for(Card c: discardStk) {
-				if(c.getNumber() == -1) {
-					AddToScore(50);
-				} else {
-					AddToScore(c.getNumber());
-				}
-			}
-		}
+//		ChooseMove(HasViableMoves(top.getColor(), top.getNumber()));
+//		
+//		if(IsHandEmpty()) {
+//			//tally points
+//			ArrayList<Card> discardStk = table.discardStk;
+//			for(Card c: discardStk) {
+//				if(c.getNumber() == -1) {
+//					AddToScore(50);
+//				} else {
+//					AddToScore(c.getNumber());
+//				}
+//			}
+//		}
 		
 	}
 	
@@ -124,6 +124,8 @@ public class Player extends Thread {
 		return hand;
 	}
 	
+	//playedcard
+	
 	@Override
 	public void run() {
 		try {
@@ -140,3 +142,9 @@ public class Player extends Thread {
 	}
 	
 }
+
+
+
+/*
+ * 
+ * */

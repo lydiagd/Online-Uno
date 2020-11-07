@@ -46,10 +46,14 @@ public class Deck {
   }
   
   public Card DealOut() { //deal out will return the front card of the deck and remove it
-	  Card c = cards.get(0);
-	  cards.remove(0);
-	  
-	  return c;
+	  if(cards.size() > 0)
+	  {
+		  Card c = cards.get(0);
+		  cards.remove(0);
+		  
+		  return c;
+	  }
+	  else return null;
   }
 
 }
