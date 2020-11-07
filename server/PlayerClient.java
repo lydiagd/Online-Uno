@@ -2,6 +2,7 @@ package serverPackage;
 import java.util.concurrent.*;
 import java.net.*;
 
+//PLAYER CLIENT CLASS
 public class PlayerClient implements Runnable{
   
   Player p;
@@ -9,6 +10,7 @@ public class PlayerClient implements Runnable{
   Boolean turn = false;
   PlayerGUI gui;
   String cardResult;
+  ArrayList<String> hand;
   
   
   public static void main(String[] args){
@@ -59,6 +61,9 @@ public class PlayerClient implements Runnable{
             }
           
           
+          Scanner sc = new Scanner(system.in);
+          
+          ArrayList<String> hand = new ArrayList<String>();
           
           while(true){
 
@@ -68,24 +73,53 @@ public class PlayerClient implements Runnable{
 
               if(str == "your turn")
               {
+                System.out.println("Enter a card: "); //format is "yellow 6"
+                String card = sc.nextLine();
+                
+                oos.writeObject(card); //signal end turn
+                oos.flush();               
+               //send end turn message
+                
                 //play your turn based from GUI
                   //while(gui.moveMade == "NONE"){}
                   //cardResult = gui.moveMade; //store in a string
+                  
+                  //don't worry about error for console version
 
-
-                //send end turn message
+                
 
               }
               else //if not a command that's recognized, probably player log
               {
                 System.out.println(str);
+                //update action log for last player's move
               }
 
-            //update yourself
-
-            //update action log for last player's move
-
-            //update num of cards of everyone
+            //update yourself, display hand
+            
+            //get game state object 
+            GameState gs = ois.readObject();
+            
+            System.out.println("Last move: " + gs.GetLastMove());
+            
+            Iterator hmIterator = gs.GetPlayersHandSize.entrySet().iterator(); 
+            while(hmIterator.hasNext())//update num of cards of everyone
+            {
+              Map.Entry mapElement = (Map.Entry)hmIterator.next(); 
+              System.out.println(mapElement.getKey + ": " + mapElement.getValue + " cards");
+            }
+            
+            System.out.println();
+            System.out.println("Top card of deck: " + gs.GetTopCard());
+            //receive list of strings to display hand
+            hand = (ArrayList<String>) ois.readObject();
+            System.out.println();
+            System.out.print("Current hand: ");
+            for(String s : hand)
+            {
+                 System.out.print(s + " ");
+            }
+            
             //gui.update
             
             //update top card
