@@ -1,14 +1,17 @@
+package online_uno;
+
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-public class GameTable {
+public class GameTable extends Thread {
 	 public DiscardStack discardStk;
 	 public DrawStack drawStk;
 	 private PlayerQueue players; //keep track of all players in the game (PlayerVector class)
+	 private GameTableState gtState;
 	 
 	 
-	 GameTable(PlayerQueue p){ //game table constructor hosting deck, draw pile, and discard pile
+	 public GameTable(PlayerQueue p) { //game table constructor hosting deck, draw pile, and discard pile
 		 players = p;
 		 
 		 Deck d = new Deck();
@@ -32,12 +35,9 @@ public class GameTable {
 			 }
 			 throw new IllegalArgumentException("Something went wrong in gametable constructor");
 		 }
-		 
-		 
 	 }
 	 
-	 public void Deal(){
-		 
+	 public void Deal() {
 		 //iterate through players vector and add to hand
 		 int num = players.Size();
 		 for(int i = 0; i < num; i++)
@@ -49,9 +49,7 @@ public class GameTable {
 			 }
 			 
 			 players.NextTurn();
-		 }
-		 
-		 
+		 }		 
 	 }
 	 
 	 public PlayerQueue getPlayers() {
@@ -75,12 +73,8 @@ public class GameTable {
 		 }
 		 
 		 public void discard(Card c) {
-			//discard(Card c) -> add to discard stack, called from player's hand
 			 discardPile.add(c);
-			
 		 }
-		  
-		  
 	}
 
 
@@ -109,6 +103,26 @@ public class GameTable {
 		}
 		  //draw() -> pop top of draw stack, called from player
 	}
+	
+	   @Override
+	   public void run() {
+		   Deal();
+		   try {
+			 while(!players.existsEmptyHand()) { //A player has an empty hand
+				 Player p = players.Top();
+				 String move = p.Play();
+				 gtState.SetLastMove(move);
+				 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
+				 players.NextTurn();
+			 }
+			 
+		 } catch (InterruptedException e) {
+		   e.printStackTrace();
+		 } finally {
+			 System.out.println("Player x won"); //TODO: specify the actual player who won
+		 }
+	     
+	   }
 
 }
 

@@ -1,6 +1,8 @@
 
 import java.util.*;
 
+import online_uno.Card;
+
 public class Player extends Thread {
 	private ArrayList<Card> hand = new ArrayList<Card>();
 	private String username;
@@ -19,23 +21,24 @@ public class Player extends Thread {
 	  //ask for user info
 	}
   
-	private void play() { //play fn to communicate with the client
-	  //read in card name
-	  Card top = table.discardStk.top();
-  //    ChooseMove(HasViableMoves(top.getColor(), top.getNumber()));
-  //    
-  //    if(IsHandEmpty()) {
-  //      //tally points
-  //      ArrayList<Card> discardStk = table.discardStk;
-  //      for(Card c: discardStk) {
-  //        if(c.getNumber() == -1) {
-  //          AddToScore(50);
-  //        } else {
-  //          AddToScore(c.getNumber());
-  //        }
-  //      }
-  //    }
-	  
+	public String Play() { //TODO: Have this function return the "move" that the player took -> "Drew card" or "Played Yellow 4"
+		//read in card name
+		Card top = table.discardStk.top();
+//		ChooseMove(HasViableMoves(top.getColor(), top.getNumber()));
+//		
+//		if(IsHandEmpty()) {
+//			//tally points
+//			ArrayList<Card> discardStk = table.discardStk;
+//			for(Card c: discardStk) {
+//				if(c.getNumber() == -1) {
+//					AddToScore(50);
+//				} else {
+//					AddToScore(c.getNumber());
+//				}
+//			}
+//		}
+		return username + ":" + "whatever move";
+		
 	}
 	
 	private void AddToScore(Integer points) {
