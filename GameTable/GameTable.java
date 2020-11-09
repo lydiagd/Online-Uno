@@ -1,6 +1,8 @@
-package online_uno;
+package GameTable;
 
+import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -23,7 +25,7 @@ public class GameTable extends Thread {
 		 drawStk = new DrawStack(d);
 		 
 		 
-		 Deal(); //call deal to pass out cards to players
+		// Deal(); //call deal to pass out cards to players
 		 
 		 //now place top card on discard pile
 		 discardStk.discard(drawStk.draw());
@@ -106,19 +108,55 @@ public class GameTable extends Thread {
 	
 	   @Override
 	   public void run() {
-		   Deal();
+		   System.out.println("Game room successfully started");
+		   Deal(); //ask for usernames?
+		   
+		   List<Player> allP = players.q; //force set username?
+		   for(int i = 0; i < allP.size(); i++)
+		   {
+			   allP.get(i).setName("player "+ i);
+		   }
+		   
 		   try {
-			 while(!players.existsEmptyHand()) { //A player has an empty hand
+			 while(true) { //A player has an empty hand
 				 Player p = players.Top();
+				 if(p.IsHandEmpty())
+				 {
+					 //end game sequence
+					 break;
+				 }
 				 String move = p.Play();
+				 
+				 //UPDATE OTHER PLAYERS THAT ITS NOT THEIR TURN
+				   allP = players.q;
+				   for(int i = 0; i < allP.size(); i++)
+				   {
+					   if(!(allP.get(i).GetName() == p.GetName()))
+					   {
+						   allP.get(i).updateClient("not your turn");
+					   }
+				   }
+				 
 				 gtState.SetLastMove(move);
 				 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
-				 players.NextTurn();
+				 //send to all clients
+				 for(int i = 0; i < allP.size(); i++)
+				 {
+					 try {
+						allP.get(i).oos.writeObject(gtState);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				 }
+				 
+				 players.NextTurn(); //swap to next turn
 			 }
 			 
-		 } catch (InterruptedException e) {
-		   e.printStackTrace();
-		 } finally {
+		 } 
+//			 catch (InterruptedException e) {
+//		   e.printStackTrace();
+//		 } 
+		finally {
 			 System.out.println("Player x won"); //TODO: specify the actual player who won
 		 }
 	     

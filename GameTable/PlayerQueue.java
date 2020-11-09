@@ -1,4 +1,4 @@
-
+package GameTable;
 
 import java.util.*;
 import java.util.concurrent.*;
@@ -9,8 +9,12 @@ public class PlayerQueue {
 	
 	//4 players
 	
-	public PlayerQueue() {
+	public PlayerQueue(ArrayList<Player> storedPlayers) {
 		semaphore = new Semaphore(1); //mutually exclusive
+		for(int i = 0; i < storedPlayers.size(); i++)
+		{
+			q.add(storedPlayers.get(i));
+		}
 	}
 	
 	public void AddPlayer(Player p) {

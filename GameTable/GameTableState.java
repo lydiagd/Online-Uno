@@ -1,5 +1,4 @@
-package online_uno;
-
+package GameTable;
 import java.util.HashMap;
 
 public class GameTableState {

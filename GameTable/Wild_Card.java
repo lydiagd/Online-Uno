@@ -1,3 +1,4 @@
+package GameTable;
 
 public class Wild_Card extends Card {
 	String c;

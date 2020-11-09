@@ -1,4 +1,4 @@
-
+package GameTable;
 public class Normal_Card extends Card{
 	
 		int number;

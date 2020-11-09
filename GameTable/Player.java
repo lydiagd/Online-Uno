@@ -1,14 +1,20 @@
-
+package GameTable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.*;
 
-import online_uno.Card;
+//import Card;
 
 public class Player extends Thread {
 	private ArrayList<Card> hand = new ArrayList<Card>();
 	private String username;
 	private Integer score;
 	private PlayerQueue playerQueue;
-	private Socket socket;
+	public Socket socket;
+	ObjectOutputStream oos;
+	ObjectInputStream ois;
 	private boolean isPlayerTurn;
 	
 	//socket to the corresponding client
@@ -18,29 +24,57 @@ public class Player extends Thread {
 	public Player(Socket s) {
 	  this.socket = s;
 	  
-	  //ask for user info
+	  try {
+		oos = new ObjectOutputStream(socket.getOutputStream());
+		ois = new ObjectInputStream(socket.getInputStream());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	  
+	  //ask for user info?
 	}
   
 	public String Play() { //TODO: Have this function return the "move" that the player took -> "Drew card" or "Played Yellow 4"
 		//read in card name
+		@SuppressWarnings("unused")
 		Card top = table.discardStk.top();
-//		ChooseMove(HasViableMoves(top.getColor(), top.getNumber()));
-//		
-//		if(IsHandEmpty()) {
-//			//tally points
-//			ArrayList<Card> discardStk = table.discardStk;
-//			for(Card c: discardStk) {
-//				if(c.getNumber() == -1) {
-//					AddToScore(50);
-//				} else {
-//					AddToScore(c.getNumber());
-//				}
-//			}
-//		}
+
+		//communicate with its socket
+		try {
+			oos.writeObject("your turn"); //tell socket it's their turn
+			oos.flush();
+			
+			//get card
+			String cardInput = (String) ois.readObject();
+			
+			//process card
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return username + ":" + "whatever move";
 		
 	}
 	
+	public void updateClient(String s) //send a string update to client
+	{
+		try {
+			oos.writeObject(s);
+			oos.flush();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	@SuppressWarnings("unused")
 	private void AddToScore(Integer points) {
 	  score += points;
 	}
@@ -61,7 +95,7 @@ public class Player extends Thread {
 	  return false;
 	}
 	
-	private boolean IsHandEmpty() {
+	boolean IsHandEmpty() {
 	  return hand.isEmpty();
 	}
 	
@@ -125,8 +159,12 @@ public class Player extends Thread {
 	}
 	
 	
-	public String GetID() {
+	public String GetName() {
 	  return username;
+	}
+	
+	public void SetName(String s) {
+		username = s;
 	}
 	
 	public ArrayList<Card> GetHand() {
@@ -134,10 +172,10 @@ public class Player extends Thread {
 	}
 	
 	public boolean GetIsPlayerTurn() {
-	  return isPlayer;
+	  return isPlayerTurn;
 	}
 	
-	public SetIsPlayerTurn(boolean isPlayerTurn) {
+	public void SetIsPlayerTurn(boolean isPlayerTurn) {
 	  this.isPlayerTurn = isPlayerTurn;
 	}
 	

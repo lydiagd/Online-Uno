@@ -1,26 +1,39 @@
-package serverPackage;
+package server;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Scanner;
 import java.util.concurrent.*;
+
+import GameTable.GameTableState;
+import GameTable.Player;
+//import PlayerGUI;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.*;
 
 //PLAYER CLIENT CLASS
 public class PlayerClient implements Runnable{
   
   Player p;
-  private Socket socket;
+  private static Socket s;
   Boolean turn = false;
-  PlayerGUI gui;
+  //PlayerGUI gui;
   String cardResult;
   ArrayList<String> hand;
   
   
   public static void main(String[] args){
+	  Scanner sc = new Scanner(System.in);
        while (true) {
               String ans = null;
               try {
                   System.out.print("Enter the server hostname: ");
-                  String hostname = in.nextLine();
+                  String hostname = sc.nextLine();
                   System.out.print("Enter the server port number: ");
-                  ans = in.nextLine();
+                  ans = sc.nextLine();
                   int port = Integer.parseInt(ans);
                   s = new Socket(hostname, port);
                   System.out.println();
@@ -59,9 +72,7 @@ public class PlayerClient implements Runnable{
               
              break;
             }
-          
-          
-          Scanner sc = new Scanner(system.in);
+         
           
           ArrayList<String> hand = new ArrayList<String>();
           
@@ -84,29 +95,27 @@ public class PlayerClient implements Runnable{
                   //while(gui.moveMade == "NONE"){}
                   //cardResult = gui.moveMade; //store in a string
                   
-                  //don't worry about error for console version
-
-                
+                  //don't worry about error for console version           
 
               }
-              else //if not a command that's recognized, probably player log
-              {
-                System.out.println(str);
-                //update action log for last player's move
-              }
+//              else //if not a command that's recognized, probably player log
+//              {
+//                System.out.println(str);
+//                //update action log for last player's move
+//              }
 
             //update yourself, display hand
             
             //get game state object 
-            GameState gs = ois.readObject();
+            GameTableState gs = (GameTableState) ois.readObject();
             
             System.out.println("Last move: " + gs.GetLastMove());
             
-            Iterator hmIterator = gs.GetPlayersHandSize.entrySet().iterator(); 
+            Iterator hmIterator = gs.GetPlayersHandSize().entrySet().iterator(); 
             while(hmIterator.hasNext())//update num of cards of everyone
             {
               Map.Entry mapElement = (Map.Entry)hmIterator.next(); 
-              System.out.println(mapElement.getKey + ": " + mapElement.getValue + " cards");
+              System.out.println(mapElement.getKey() + ": " + mapElement.getValue() + " cards");
             }
             
             System.out.println();
@@ -132,7 +141,7 @@ public class PlayerClient implements Runnable{
           
         }
           catch (SocketException se) {
-            System.out.println(TimeFormatter.getTimeString() + " Server dropped connection");
+            System.out.println(" Server dropped connection");
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
