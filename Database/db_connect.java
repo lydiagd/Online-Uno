@@ -150,4 +150,31 @@ public class db_connect {
 		return answer;
 	}
 	
+	
+	// returns true if user exists, false otherwise
+	public static boolean userExists(String user) throws SQLException
+	{
+		// MySQL statement
+		String sql = "SELECT COUNT(*) as count FROM Users WHERE Username = ?;";
+		boolean answer = false;
+		
+		// Connect to the DB
+		Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+			
+		// Add "user" and "pwd" to SQL statement
+		PreparedStatement ps = conn.prepareStatement(sql);
+		ps.setString(1, user);
+		
+		// Get the result set
+		ResultSet rs = ps.executeQuery();
+		rs.next();
+		if (rs.getInt("count") == 1) answer = true;
+		
+		// Close resources
+		conn.close();
+		ps.close();
+		
+		// return whether the user is valid or not
+		return answer;
+	}
 }
