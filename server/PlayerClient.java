@@ -80,54 +80,58 @@ public class PlayerClient implements Runnable{
 
             //read in strings from server side
 
-             String str = (String) ois.readObject();
-
-              if(str == "your turn")
-              {
-                System.out.println("Enter a card: "); //format is "yellow 6"
-                String card = sc.nextLine();
-                
-                oos.writeObject(card); //signal end turn
-                oos.flush();               
-               //send end turn message
-                
-                //play your turn based from GUI
-                  //while(gui.moveMade == "NONE"){}
-                  //cardResult = gui.moveMade; //store in a string
-                  
-                  //don't worry about error for console version           
-
-              }
+			 String str = (String) ois.readObject();
+			
+			  if(str == "your turn")
+			  {
+			    System.out.println("Enter a card: "); //format is "yellow 6"
+			    String card = sc.nextLine();
+			    
+			    oos.writeObject(card); //signal end turn
+			    oos.flush();               
+			   
+			    //update yourself, display hand
+			    hand = (ArrayList<String>) ois.readObject();
+			    
+			    //play your turn based from GUI
+			      //while(gui.moveMade == "NONE"){}
+			      //cardResult = gui.moveMade; //store in a string
+			      
+			      //don't worry about error for console version           
+			
+			  }
+			  else if(str == null) //END PLAYER RUN
+			  {
+				  break;
+			  }
 //              else //if not a command that's recognized, probably player log
 //              {
 //                System.out.println(str);
 //                //update action log for last player's move
 //              }
-
-            //update yourself, display hand
-            
-            //get game state object 
-            GameTableState gs = (GameTableState) ois.readObject();
-            
-            System.out.println("Last move: " + gs.GetLastMove());
-            
-            Iterator hmIterator = gs.GetPlayersHandSize().entrySet().iterator(); 
-            while(hmIterator.hasNext())//update num of cards of everyone
-            {
-              Map.Entry mapElement = (Map.Entry)hmIterator.next(); 
-              System.out.println(mapElement.getKey() + ": " + mapElement.getValue() + " cards");
-            }
-            
-            System.out.println();
-            System.out.println("Top card of deck: " + gs.GetTopCard());
-            //receive list of strings to display hand
-            hand = (ArrayList<String>) ois.readObject();
-            System.out.println();
-            System.out.print("Current hand: ");
-            for(String s : hand)
-            {
-                 System.out.print(s + " ");
-            }
+			
+			//get game state object 
+			GameTableState gs = (GameTableState) ois.readObject();
+			
+			System.out.println("Last move: " + gs.GetLastMove());
+			
+			Iterator hmIterator = gs.GetPlayersHandSize().entrySet().iterator(); 
+			while(hmIterator.hasNext())//update num of cards of everyone
+			{
+			  Map.Entry mapElement = (Map.Entry)hmIterator.next(); 
+			  System.out.println(mapElement.getKey() + ": " + mapElement.getValue() + " cards");
+			}
+			
+			System.out.println();
+			System.out.println("Top card of deck: " + gs.GetTopCard());
+			//receive list of strings to display hand
+			
+			System.out.println();
+			System.out.print("Current hand: ");
+			for(String s : hand)
+			{
+			     System.out.print(s + " ");
+			}
             
             //gui.update
             

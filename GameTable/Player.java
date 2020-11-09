@@ -34,11 +34,16 @@ public class Player extends Thread {
 	  
 	  //ask for user info?
 	}
+	
+	public void setGameTable(GameTable g)
+	{
+		table = g;
+	}
   
 	public String Play() { //TODO: Have this function return the "move" that the player took -> "Drew card" or "Played Yellow 4"
 		//read in card name
-		@SuppressWarnings("unused")
 		Card top = table.discardStk.top();
+		Card cur = null;
 
 		//communicate with its socket
 		try {
@@ -49,6 +54,30 @@ public class Player extends Thread {
 			String cardInput = (String) ois.readObject();
 			
 			//process card
+			//this is assuming the card is a viable move
+			String[] cardPlayedInfo = cardInput.split(" "); //assuming this is in format "blue 3"
+			int cardNum = Integer.parseInt(cardPlayedInfo[1]);
+			for(int i = 0; i < hand.size(); i++)
+			{
+				cur = hand.get(i);
+				if(cur.getColor() == cardPlayedInfo[0] && cur.getNumber() == cardNum)
+				{
+					//remove selected card from hand and put on table's discard stack
+					table.discardStk.discard(cur); //add to discard stack
+					hand.remove(i);
+				}
+			}
+			
+			//send updated hand back to client
+			ArrayList<String> handInfo = new ArrayList<String>();
+			for(Card c : hand)
+			{
+				handInfo.add(c.stringout());
+			}
+			
+			oos.writeObject(handInfo);
+			oos.flush();
+			
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -58,7 +87,7 @@ public class Player extends Thread {
 			e.printStackTrace();
 		}
 		
-		return username + ":" + "whatever move";
+		return (username + " played " + cur.stringout());
 		
 	}
 	
@@ -68,7 +97,6 @@ public class Player extends Thread {
 			oos.writeObject(s);
 			oos.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

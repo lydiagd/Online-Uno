@@ -108,6 +108,7 @@ public class GameTable extends Thread {
 	
 	   @Override
 	   public void run() {
+		   Player winningPlayer = null; //place to store info for winning player
 		   System.out.println("Game room successfully started");
 		   Deal(); //ask for usernames?
 		   
@@ -115,6 +116,8 @@ public class GameTable extends Thread {
 		   for(int i = 0; i < allP.size(); i++)
 		   {
 			   allP.get(i).setName("player "+ i);
+			   //SET GAME TABLE
+			   allP.get(i).setGameTable(this);
 		   }
 		   
 		   try {
@@ -122,7 +125,8 @@ public class GameTable extends Thread {
 				 Player p = players.Top();
 				 if(p.IsHandEmpty())
 				 {
-					 //end game sequence
+					 //end game sequence - write null to player clients???
+					 winningPlayer = p;
 					 break;
 				 }
 				 String move = p.Play();
@@ -157,7 +161,8 @@ public class GameTable extends Thread {
 //		   e.printStackTrace();
 //		 } 
 		finally {
-			 System.out.println("Player x won"); //TODO: specify the actual player who won
+			 System.out.println("Player" + winningPlayer.GetName() + " won the game."); //TODO: specify the actual player who won
+			 //don't just pring on server, actually send message to player threads before ending them?
 		 }
 	     
 	   }
