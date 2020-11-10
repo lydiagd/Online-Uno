@@ -1,6 +1,8 @@
 package GameTable;
 
 import java.io.IOException;
+import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -115,9 +117,26 @@ public class GameTable extends Thread {
 		   List<Player> allP = players.q; //force set username?
 		   for(int i = 0; i < allP.size(); i++)
 		   {
-			   allP.get(i).setName("player "+ i);
+			   Player curP = allP.get(i);
+			   //artificial username
+			   curP.setName("player "+ i);
+			   //send their hand to the client before starting game
+			   ArrayList<String> handInfo = new ArrayList<String>();
+				for(Card c : curP.GetHand())
+				{
+					handInfo.add(c.stringout());
+				}
+				
+				try {
+					curP.oos.writeObject(handInfo); //write successfully
+					curP.oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			   
+			   
 			   //SET GAME TABLE
-			   allP.get(i).setGameTable(this);
+			   curP.setGameTable(this);
 		   }
 		   
 		   try {
@@ -157,12 +176,12 @@ public class GameTable extends Thread {
 			 }
 			 
 		 } 
-//			 catch (InterruptedException e) {
+//		catch (SocketException e) {
 //		   e.printStackTrace();
 //		 } 
 		finally {
-			 System.out.println("Player" + winningPlayer.GetName() + " won the game."); //TODO: specify the actual player who won
-			 //don't just pring on server, actually send message to player threads before ending them?
+			 System.out.println("Player" + winningPlayer.GetName() + " won the game."); 
+			 //don't just print on server, actually send message to player threads before ending them?
 		 }
 	     
 	   }

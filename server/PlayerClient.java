@@ -22,11 +22,14 @@ public class PlayerClient implements Runnable{
   Boolean turn = false;
   //PlayerGUI gui;
   String cardResult;
-  ArrayList<String> hand;
+
   
   
-  public static void main(String[] args){
+  @SuppressWarnings({ "unchecked", "unused" })
+public static void main(String[] args){
 	  Scanner sc = new Scanner(System.in);
+	  ArrayList<String> hand;
+	  
        while (true) {
               String ans = null;
               try {
@@ -49,8 +52,8 @@ public class PlayerClient implements Runnable{
 
     
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
+            ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
 
             Integer num = (Integer) ois.readObject();
 
@@ -58,23 +61,27 @@ public class PlayerClient implements Runnable{
             while (true) {
              //signal game starts
              String s = (String) ois.readObject();
-             if(s == "start")
+             if(s.equals("start"))
              {
+            	 System.out.println("starting the game");
                 //pass player object
                //create GUI from hand
                //PlayerGUI gui = new PlayerGUI(Card[] hand)
                
-             }
+             
              //wait for a card array/Player object p 
-               
-            //wait for opponents
-            //create a gui and pass in cards 
+            	 hand = (ArrayList<String>) ois.readObject();
+            	 System.out.print("your hand: ");
+            	 for(String str : hand)
+            	 {
+            		 System.out.print(" | " + s + " | ");
+            	 }
               
-             break;
+            	 break;
+             }
             }
          
           
-          ArrayList<String> hand = new ArrayList<String>();
           
           while(true){
 
@@ -82,9 +89,9 @@ public class PlayerClient implements Runnable{
 
 			 String str = (String) ois.readObject();
 			
-			  if(str == "your turn")
+			  if(str.equals("your turn"))
 			  {
-			    System.out.println("Enter a card: "); //format is "yellow 6"
+			    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
 			    String card = sc.nextLine();
 			    
 			    oos.writeObject(card); //signal end turn

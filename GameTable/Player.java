@@ -13,8 +13,8 @@ public class Player extends Thread {
 	private Integer score;
 	private PlayerQueue playerQueue;
 	public Socket socket;
-	ObjectOutputStream oos;
-	ObjectInputStream ois;
+	public ObjectOutputStream oos;
+	public ObjectInputStream ois;
 	private boolean isPlayerTurn;
 	
 	//socket to the corresponding client
