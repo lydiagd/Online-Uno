@@ -13,12 +13,14 @@ public class Server {
   public static final int roomsize = 4;
   public static final int maxPlayers = 20;
   //have port be 1024<=port<=49151 since they can be used by any app
-  public static final int port = 6789;
-  private ArrayList<Player> playerList = new ArrayList<Player>(); //saves num players joined
+  public static final int port = 6790;
   
-  private ArrayList<GameTable> GameTableList = new ArrayList<GameTable>(); //saves game tables
-	  public void main (String[] args) throws IOException
+  
+  private static ArrayList<GameTable> GameTableList = new ArrayList<GameTable>(); //saves game tables
+  
+	  public static void main (String[] args) throws IOException
 	  {
+		ArrayList<Player> playerList = new ArrayList<Player>(); //saves num players joined
 	
 	    while(true)
 	    {
