@@ -74,7 +74,7 @@ public static void main(String[] args){
             	 System.out.print("your hand: ");
             	 for(String str : hand)
             	 {
-            		 System.out.print(" | " + s + " | ");
+            		 System.out.print(" | " + str + " | ");
             	 }
               
             	 break;
