@@ -28,7 +28,7 @@ public class PlayerClient implements Runnable{
   @SuppressWarnings({ "unchecked", "unused" })
 public static void main(String[] args){
 	  Scanner sc = new Scanner(System.in);
-	  ArrayList<String> hand;
+	  ArrayList<String> hand; // color #
 	  
        while (true) {
               String ans = null;
@@ -74,14 +74,15 @@ public static void main(String[] args){
             	 System.out.print("your hand: ");
             	 for(String str : hand)
             	 {
-            		 System.out.print(" | " + s + " | ");
+            		 System.out.print(" | " + str + " | ");
             	 }
               
             	 break;
              }
             }
          
-          
+          //receive gamestateobj from server
+            
           
           while(true){
 

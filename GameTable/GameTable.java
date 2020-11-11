@@ -12,7 +12,7 @@ public class GameTable extends Thread {
 	 public DiscardStack discardStk;
 	 public DrawStack drawStk;
 	 private PlayerQueue players; //keep track of all players in the game (PlayerVector class)
-	 private GameTableState gtState;
+	 private GameTableState gtState = new GameTableState();
 	 
 	 
 	 public GameTable(PlayerQueue p) { //game table constructor hosting deck, draw pile, and discard pile
@@ -37,7 +37,9 @@ public class GameTable extends Thread {
 			 {
 				 discardStk.discard(drawStk.draw());
 			 }
-			 throw new IllegalArgumentException("Something went wrong in gametable constructor");
+			 else {
+				 throw new IllegalArgumentException("Something went wrong in gametable constructor");
+			 }
 		 }
 	 }
 	 
@@ -119,7 +121,8 @@ public class GameTable extends Thread {
 		   {
 			   Player curP = allP.get(i);
 			   //artificial username
-			   curP.setName("player "+ i);
+			   curP.SetName("player "+ i);
+			   
 			   //send their hand to the client before starting game
 			   ArrayList<String> handInfo = new ArrayList<String>();
 				for(Card c : curP.GetHand())
@@ -129,7 +132,7 @@ public class GameTable extends Thread {
 				
 				try {
 					curP.oos.writeObject(handInfo); //write successfully
-					curP.oos.flush();
+					curP.oos.flush(); //all cards are making it through
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -138,6 +141,8 @@ public class GameTable extends Thread {
 			   //SET GAME TABLE
 			   curP.setGameTable(this);
 		   }
+		   
+		   //send gamestate obj before starting game
 		   
 		   try {
 			 while(true) { //A player has an empty hand
@@ -148,17 +153,20 @@ public class GameTable extends Thread {
 					 winningPlayer = p;
 					 break;
 				 }
-				 String move = p.Play();
 				 
 				 //UPDATE OTHER PLAYERS THAT ITS NOT THEIR TURN
 				   allP = players.q;
 				   for(int i = 0; i < allP.size(); i++)
 				   {
-					   if(!(allP.get(i).GetName() == p.GetName()))
+					   String name1 = allP.get(i).GetName();
+					   String name2 = p.GetName();
+					   if(!(name1.equals(name2)))
 					   {
 						   allP.get(i).updateClient("not your turn");
 					   }
 				   }
+				 
+				 String move = p.Play(); //returns string update
 				 
 				 gtState.SetLastMove(move);
 				 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
@@ -167,6 +175,7 @@ public class GameTable extends Thread {
 				 {
 					 try {
 						allP.get(i).oos.writeObject(gtState);
+						allP.get(i).oos.flush();
 					} catch (IOException e) {
 						e.printStackTrace();
 					}

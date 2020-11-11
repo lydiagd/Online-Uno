@@ -25,8 +25,8 @@ public class Player extends Thread {
 	  this.socket = s;
 	  
 	  try {
-		oos = new ObjectOutputStream(socket.getOutputStream());
-		ois = new ObjectInputStream(socket.getInputStream());
+			oos = new ObjectOutputStream(socket.getOutputStream());
+			ois = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,17 +56,23 @@ public class Player extends Thread {
 			//process card
 			//this is assuming the card is a viable move
 			String[] cardPlayedInfo = cardInput.split(" "); //assuming this is in format "blue 3"
+			//handle wildcard here
+			
+			
 			int cardNum = Integer.parseInt(cardPlayedInfo[1]);
 			for(int i = 0; i < hand.size(); i++)
 			{
 				cur = hand.get(i);
-				if(cur.getColor() == cardPlayedInfo[0] && cur.getNumber() == cardNum)
+				if(cur.getColor().equals(cardPlayedInfo[0]) && cur.getNumber() == cardNum)
 				{
 					//remove selected card from hand and put on table's discard stack
 					table.discardStk.discard(cur); //add to discard stack
 					hand.remove(i);
+					break;
 				}
+				
 			}
+			//if null catch something
 			
 			//send updated hand back to client
 			ArrayList<String> handInfo = new ArrayList<String>();

@@ -1,4 +1,7 @@
 package GameTable;
+
+import java.util.ArrayList;
+
 public class Tester {
 	
 	public static void main(String [] args) 
@@ -19,26 +22,28 @@ public class Tester {
 		
 		//PLAYER TEST
 		System.out.println();
-		PlayerQueue pq = new PlayerQueue();
+		ArrayList<Player> playerArr = new ArrayList<>();
 		String[] userNms = {"me1", "another1", "3rdGuy", "lastPlayer"};
-		for(int i = 0; i < 4; i++)
+		for(int i = 0; i < userNms.length; i++)
 		{
-			Player p = new Player(userNms[i]);
-			pq.AddPlayer(p);
+			Player p = new Player(null);
+			p.SetName(userNms[i]);
+			playerArr.add(p);
 		}
+		PlayerQueue pq = new PlayerQueue(playerArr);
 		
-		System.out.println("top player: "+pq.Top().GetID());
+		System.out.println("top player: "+pq.Top().getId());
 		pq.RemovePlayer(pq.Top());
 		
-		System.out.println("new top player: "+pq.Top().GetID());
+		System.out.println("new top player: "+pq.Top().getId());
 		
 		pq.NextTurn();
-		System.out.println("next turn player: "+pq.Top().GetID());
+		System.out.println("next turn player: "+pq.Top().getId());
 		
 		for(int i = 0; i < 3; i++)
 		{
 			pq.NextTurn();
-			System.out.println(pq.Top().GetID() + " , then ");
+			System.out.println(pq.Top().getId() + " , then ");
 		}
 		
 		
@@ -52,7 +57,7 @@ public class Tester {
 			PlayerQueue pl = gt.getPlayers();
 			for(Player p : pl.q)
 			{
-				System.out.print("PLAYER "+p.GetID()+ " : ");
+				System.out.print("PLAYER "+p.getId()+ " : ");
 				for(int i = 0; i<p.GetHand().size(); i++)
 				{
 					System.out.print(p.GetHand().get(i).stringout() + " | ");
