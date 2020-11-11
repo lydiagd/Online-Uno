@@ -19,6 +19,10 @@ public class Wild_Card extends Card {
 	public String getColor() {
 		return super.color;
 	}
+	
+	public void setColor(String newCol) {
+		super.color = newCol;
+	}
 
 
 	@Override

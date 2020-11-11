@@ -58,6 +58,12 @@ public class GameTable extends Thread {
 		 }		 
 	 }
 	 
+	 public void ReShuffle() {
+		 Deck d = new Deck();
+		 d.shuffle();
+		 drawStk = new DrawStack(d);
+	 }
+	 
 	 public PlayerQueue getPlayers() {
 		 return players;
 	 }

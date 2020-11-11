@@ -25,6 +25,9 @@ public class Normal_Card extends Card{
 		return super.color;
 	}
 
+	public void setColor(String newCol) {
+		super.color = newCol;
+	}
 
 
 	@Override

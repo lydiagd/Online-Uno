@@ -96,7 +96,16 @@ public static void main(String[] args){
 			    String card = sc.nextLine();
 			    
 			    oos.writeObject(card); //signal end turn
-			    oos.flush();               
+			    oos.flush(); 
+			    
+			    if(card.equals("wildcard"))
+			    {
+			    	System.out.print("enter color to change to: ");
+			    	String newColor = sc.nextLine();
+			    	
+			    	oos.writeObject(newColor);
+			    	oos.flush();
+			    }
 			   
 			    //update yourself, display hand
 			    hand = (ArrayList<String>) ois.readObject();

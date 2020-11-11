@@ -19,4 +19,6 @@ public abstract class Card {
 		public abstract int getNumber();
 		public abstract String stringout();
 
+		protected abstract void setColor(String newColor);
+
 }
