@@ -3,6 +3,7 @@ package GameTable;
 import java.io.IOException;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -173,10 +174,9 @@ public class GameTable extends Thread {
 				   }
 				 
 				 String move = p.Play(); //returns string update
+				 UpdateGameState(move, allP);
 				 
-				 gtState.SetLastMove(move);
-				 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
-				 //send to all clients
+				 //GameTableState send to all clients
 				 for(int i = 0; i < allP.size(); i++)
 				 {
 					 try {
@@ -200,6 +200,19 @@ public class GameTable extends Thread {
 		 }
 	     
 	   }
+	   
+	   public void UpdateGameState(String lastMove, List<Player> allPlayers) {
+			 gtState.SetLastMove(lastMove);
+			 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
+			 HashMap<String, Integer> playerToHandSize = new HashMap<String, Integer>();
+			 for(int i = 0; i < allPlayers.size(); i++)
+			 {
+				 playerToHandSize.put(allPlayers.get(i).GetName(), allPlayers.get(i).GetHand().size());
+			 }
+			 gtState.SetPlayersHandSize(playerToHandSize);
+	   }
 
 }
+
+
 
