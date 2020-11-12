@@ -23,7 +23,7 @@ public class Deck {
     
     for(int i = 0; i < 10; i++) //add wildcards to the deck
     {
-      cards.add(new Wild_Card("Wildcard"));
+      cards.add(new Wild_Card("wildcard"));
     }
     
   }

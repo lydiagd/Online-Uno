@@ -119,8 +119,12 @@ public class Player extends Thread {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		if(cur == null) {
+			return (username + " played draw");
+		} else {
+			return (username + " played " + cur.stringout());
+		}
 		
-		return (username + " played " + cur.stringout());
 		
 	}
 	

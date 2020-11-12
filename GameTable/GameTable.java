@@ -149,7 +149,7 @@ public class GameTable extends Thread {
 	   public void run() {
 		   Player winningPlayer = null; //place to store info for winning player
 		   System.out.println("Game room successfully started");
-		   Deal(); //ask for usernames?
+		   Deal(); //ask for usernames?  //TODO: usernames as input by PlayerClients or configured with user authentification?
 		   
 		   List<Player> allP = players.q; //force set username?
 		   for(int i = 0; i < allP.size(); i++)
@@ -158,7 +158,6 @@ public class GameTable extends Thread {
 			   //artificial username
 			   curP.SetName("player "+ i);
 			   	   
-			   
 			   //SET GAME TABLE FOR PLAYER
 			   curP.setGameTable(this);
 		   }
@@ -232,8 +231,7 @@ public class GameTable extends Thread {
 //		   e.printStackTrace();
 //		 } 
 		finally {
-			 //System.out.println(winningPlayer.GetName() + " won the game."); 
-			 //don't just print on server, actually send message to player threads before ending them?
+			 //notify player clients of the winner
 			   allP = players.q;
 			   for(Player p: allP)
 			   {
