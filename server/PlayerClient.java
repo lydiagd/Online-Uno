@@ -92,30 +92,34 @@ public static void main(String[] args){
 			
 			  if(str.equals("your turn"))
 			  {
-			    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
-			    String card = sc.nextLine();
-			    
-			    oos.writeObject(card); //signal end turn
-			    oos.flush(); 
-			    
-			    if(card.equals("wildcard"))
-			    {
-			    	System.out.print("enter color to change to: ");
-			    	String newColor = sc.nextLine();
-			    	
-			    	oos.writeObject(newColor);
-			    	oos.flush();
-			    }
-			   
-			    //update yourself, display hand
-			    hand = (ArrayList<String>) ois.readObject();
-			    
-			    //play your turn based from GUI
-			      //while(gui.moveMade == "NONE"){}
-			      //cardResult = gui.moveMade; //store in a string
-			      
-			      //don't worry about error for console version           
+				    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
+				    String card = sc.nextLine();
+				    
+				    oos.writeObject(card); //signal end turn
+				    oos.flush(); 
+				    
+				    if(card.equals("wildcard"))
+				    {
+				    	System.out.print("enter color to change to: ");
+				    	String newColor = sc.nextLine();
+				    	
+				    	oos.writeObject(newColor);
+				    	oos.flush();
+				    }
+				   
+				    //update yourself, display hand
+				    hand = (ArrayList<String>) ois.readObject();
+				    
+				    //play your turn based from GUI
+				      //while(gui.moveMade == "NONE"){}
+				      //cardResult = gui.moveMade; //store in a string
+				      
+				      //don't worry about error for console version           
 			
+			  }
+			  else if(str.equals("end")) {
+				  String finalMessage = (String) ois.readObject();
+				  System.out.println(finalMessage);
 			  }
 			  else if(str == null) //END PLAYER RUN
 			  {
@@ -140,6 +144,7 @@ public static void main(String[] args){
 			{
 			     System.out.print(s + " ");
 			}
+			System.out.println("\n");
             
             //gui.update
             

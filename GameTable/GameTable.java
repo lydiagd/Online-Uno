@@ -117,6 +117,34 @@ public class GameTable extends Thread {
 		  //draw() -> pop top of draw stack, called from player
 	}
 	
+	   //updates GameTableState's lastMove, hand sizes of all players, and top card on the discard stack
+	   public void UpdateGameTableState(String lastMove, List<Player> allPlayers) {
+		   	 gtState = new GameTableState();
+			 gtState.SetLastMove(lastMove);
+			 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
+			 HashMap<String, Integer> playerToHandSize = new HashMap<String, Integer>();
+			 for(int i = 0; i < allPlayers.size(); i++)
+			 {
+				 Integer size = Integer.valueOf(allPlayers.get(i).GetHand().size());
+				 String playerName = allPlayers.get(i).GetName();
+				 playerToHandSize.put(playerName, size);
+			 }
+			 gtState.SetPlayersHandSize(playerToHandSize);
+	   }
+	   
+	   //sends current GameTableState to all players at this GameTable
+	   public void SendGameTableStateToClients(List<Player> allPlayers) {
+			 for(int i = 0; i < allPlayers.size(); i++)
+			 {
+				 try {
+					allPlayers.get(i).oos.writeObject(gtState);
+					allPlayers.get(i).oos.flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			 }
+	   }
+	
 	   @Override
 	   public void run() {
 		   Player winningPlayer = null; //place to store info for winning player
@@ -129,21 +157,7 @@ public class GameTable extends Thread {
 			   Player curP = allP.get(i);
 			   //artificial username
 			   curP.SetName("player "+ i);
-			   
-//			   //send their hand to the client before starting game
-//			   ArrayList<String> handInfo = new ArrayList<String>();
-//				for(Card c : curP.GetHand())
-//				{
-//					handInfo.add(c.stringout());
-//				}
-//				
-//				try {
-//					curP.oos.writeObject(handInfo); //write successfully
-//					curP.oos.flush(); //all cards are making it through
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-			   
+			   	   
 			   
 			   //SET GAME TABLE FOR PLAYER
 			   curP.setGameTable(this);
@@ -155,6 +169,7 @@ public class GameTable extends Thread {
 		   //send initial GameTableState for each client
 		   SendGameTableStateToClients(allP);
 		   
+		   //send their hand to the client before starting game
 		   for(int i = 0; i < allP.size(); i++)
 		   {
 			   Player curP = allP.get(i);
@@ -183,12 +198,6 @@ public class GameTable extends Thread {
 		   try {
 			 while(true) { //A player has an empty hand
 				 Player p = players.Top();
-				 if(p.IsHandEmpty())
-				 {
-					 //end game sequence - write null to player clients???
-					 winningPlayer = p;
-					 break;
-				 }
 				 
 				 //UPDATE OTHER PLAYERS THAT ITS NOT THEIR TURN
 				   allP = players.q;
@@ -207,6 +216,14 @@ public class GameTable extends Thread {
 				 UpdateGameTableState(move, allP);
 				 SendGameTableStateToClients(allP);
 				 
+				 boolean endCondition = p.IsHandEmpty();
+				 if(endCondition)
+				 {
+					 //end game sequence - write null to player clients???
+					 winningPlayer = p;
+					 break;
+				 }
+				 
 				 players.NextTurn(); //swap to next turn
 			 }
 			 
@@ -215,40 +232,17 @@ public class GameTable extends Thread {
 //		   e.printStackTrace();
 //		 } 
 		finally {
-			 System.out.println("Player" + winningPlayer.GetName() + " won the game."); 
+			 //System.out.println(winningPlayer.GetName() + " won the game."); 
 			 //don't just print on server, actually send message to player threads before ending them?
-		 }
+			   allP = players.q;
+			   for(Player p: allP)
+			   {
+				   p.updateClient("end");
+				   p.updateClient(winningPlayer.GetName() + " won the game.");
+			   }
+			}
 	     
 	   }
-	   
-	   //updates GameTableState's lastMove, hand sizes of all players, and top card on the discard stack
-	   public void UpdateGameTableState(String lastMove, List<Player> allPlayers) {
-		   	 gtState = new GameTableState();
-			 gtState.SetLastMove(lastMove);
-			 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
-			 HashMap<String, Integer> playerToHandSize = new HashMap<String, Integer>();
-			 for(int i = 0; i < allPlayers.size(); i++)
-			 {
-				 Integer size = Integer.valueOf(allPlayers.get(i).GetHand().size());
-				 String playerName = allPlayers.get(i).GetName();
-				 playerToHandSize.put(playerName, size);
-			 }
-			 gtState.SetPlayersHandSize(playerToHandSize);
-	   }
-	   
-	   //sends current GameTableState to all players at this GameTable
-	   public void SendGameTableStateToClients(List<Player> allPlayers) {
-			 for(int i = 0; i < allPlayers.size(); i++)
-			 {
-				 try {
-					allPlayers.get(i).oos.writeObject(gtState);
-					allPlayers.get(i).oos.flush();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-			 }
-	   }
-
 }
 
 

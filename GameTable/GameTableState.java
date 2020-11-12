@@ -24,7 +24,6 @@ public class GameTableState implements Serializable {
 	  }
 	  
 	  public void SetLastMove(String lastMove) {
-		  System.out.println("here");
 	    this.lastMove = lastMove;
 	  }
 	  
