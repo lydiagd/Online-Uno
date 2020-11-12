@@ -1,4 +1,5 @@
 package GameTable;
+import java.io.Serializable;
 import java.util.HashMap;
 
 public class GameTableState implements Serializable {
@@ -9,10 +10,6 @@ public class GameTableState implements Serializable {
 	  public GameTableState() {
 
 	  }
-	  
-	  // public GameTableState SendState() {
-	  //   return this;
-	  // }
 	  
 	  public String GetLastMove() {
 	    return lastMove;
@@ -38,5 +35,5 @@ public class GameTableState implements Serializable {
 	  public void SetTopCard(String topCard) {
 	    this.topCard = topCard;
 	  }
-	}
+}
 	       

@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 
 //PLAYER CLIENT CLASS
-public class PlayerClient implements Runnable{
+public class PlayerClient{
   
   Player p;
   private static Socket s;
@@ -67,7 +67,10 @@ public static void main(String[] args){
                 //pass player object
                //create GUI from hand
                //PlayerGUI gui = new PlayerGUI(Card[] hand)
-               
+            	 
+                 //receive gamestateobj from server
+     			GameTableState gs_init = (GameTableState) ois.readObject();
+     			PrintGameTableState(gs_init);
              
              //wait for a card array/Player object p 
             	 hand = (ArrayList<String>) ois.readObject();
@@ -80,9 +83,6 @@ public static void main(String[] args){
             	 break;
              }
             }
-         
-          //receive gamestateobj from server
-            
           
           while(true){
 
@@ -129,18 +129,9 @@ public static void main(String[] args){
 			
 			//get game state object 
 			GameTableState gs = (GameTableState) ois.readObject();
+			PrintGameTableState(gs);
 			
-			System.out.println("Last move: " + gs.GetLastMove());
-			
-			Iterator hmIterator = gs.GetPlayersHandSize().entrySet().iterator(); 
-			while(hmIterator.hasNext())//update num of cards of everyone
-			{
-			  Map.Entry mapElement = (Map.Entry)hmIterator.next(); 
-			  System.out.println(mapElement.getKey() + ": " + mapElement.getValue() + " cards");
-			}
-			
-			System.out.println();
-			System.out.println("Top card of deck: " + gs.GetTopCard());
+
 			//receive list of strings to display hand
 			
 			System.out.println();
@@ -154,14 +145,11 @@ public static void main(String[] args){
             
             //update top card
             //gui.setFaceUp(Card top)
-
-
         }  
 
           
-          
-        }
-          catch (SocketException se) {
+ 
+        } catch (SocketException se) {
             System.out.println(" Server dropped connection");
         } catch (IOException ioe) {
             ioe.printStackTrace();
@@ -171,9 +159,18 @@ public static void main(String[] args){
     
   }
   
-  public void run() //do we need as a thread?
-  {
-        
-    
+  //prints the last player move, the hand sizes of each player, and the top card on the discard stack
+  public static void PrintGameTableState(GameTableState gs) {
+		System.out.println("Last move: " + gs.GetLastMove());
+		
+		Iterator hmIterator = gs.GetPlayersHandSize().entrySet().iterator(); 
+		while(hmIterator.hasNext())//update num of cards of everyone
+		{
+		  Map.Entry mapElement = (Map.Entry)hmIterator.next(); 
+		  System.out.println(mapElement.getKey() + ": " + mapElement.getValue() + " cards");
+		}
+		
+		System.out.println();
+		System.out.println("Top card of deck: " + gs.GetTopCard());
   }
 }
