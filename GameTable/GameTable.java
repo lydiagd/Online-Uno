@@ -172,8 +172,6 @@ public class GameTable extends Thread {
 		   for(int i = 0; i < allP.size(); i++)
 		   {
 			   Player curP = allP.get(i);
-			   //artificial username
-			   curP.SetName("player "+ i);
 			   
 			   //send their hand to the client before starting game
 			   ArrayList<String> handInfo = new ArrayList<String>();
@@ -188,10 +186,6 @@ public class GameTable extends Thread {
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
-			   
-			   
-			   //SET GAME TABLE FOR PLAYER
-			   curP.setGameTable(this);
 		   }
 		   
 		   try {
