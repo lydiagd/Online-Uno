@@ -1,13 +1,13 @@
 package GameTable;
 import java.util.HashMap;
 
-public class GameTableState {
+public class GameTableState implements Serializable {
 	  private String lastMove;
 	  private HashMap<String, Integer> playersHandSize; //key: username, value: hand size
 	  private String topCard;
 	  
 	  public GameTableState() {
-	    
+
 	  }
 	  
 	  // public GameTableState SendState() {
