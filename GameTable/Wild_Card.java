@@ -3,7 +3,7 @@ package GameTable;
 public class Wild_Card extends Card {
 	String c;
 
-	Wild_Card(String col) {
+	public Wild_Card(String col) {
 		super(col);
 		
 	}
