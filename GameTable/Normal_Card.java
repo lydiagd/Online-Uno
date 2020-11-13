@@ -3,7 +3,7 @@ public class Normal_Card extends Card{
 	
 		int number;
 
-	Normal_Card(String col, int num) {
+	public Normal_Card(String col, int num) {
 		super(col);
 		number = num;
 	}
