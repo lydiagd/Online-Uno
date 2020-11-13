@@ -121,7 +121,7 @@ public class GameTable extends Thread {
 	   public void UpdateGameTableState(String lastMove, List<Player> allPlayers) {
 		   	 gtState = new GameTableState();
 			 gtState.SetLastMove(lastMove);
-			 gtState.SetTopCard(discardStk.top().getColor() + " " + discardStk.top().getNumber());
+			 gtState.SetTopCard(discardStk.top().stringout());
 			 HashMap<String, Integer> playerToHandSize = new HashMap<String, Integer>();
 			 for(int i = 0; i < allPlayers.size(); i++)
 			 {
@@ -156,7 +156,7 @@ public class GameTable extends Thread {
 		   {
 			   Player curP = allP.get(i);
 			   //artificial username
-			   curP.SetName("player "+ i);
+//			   curP.SetName("player "+ i);
 			   	   
 			   //SET GAME TABLE FOR PLAYER
 			   curP.setGameTable(this);

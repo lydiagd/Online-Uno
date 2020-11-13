@@ -54,10 +54,50 @@ public static void main(String[] args){
         try {
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
+            
+            //enter username
+            System.out.println("Are you a guest or a user? ");
+            String response = sc.nextLine();
+            
+            if(response.equals("user"))
+            {
+            	oos.writeObject("user");
+            	oos.flush();
+            	while(true)
+            	{
+	       
+	            	System.out.print("Username: ");
+	            	String usernameResponse = sc.nextLine();
+	            	oos.writeObject(usernameResponse);
+	            	oos.flush();
+	            	System.out.print("Password: ");
+	            	String passResponse = sc.nextLine();
+	            	oos.writeObject(passResponse);
+	            	oos.flush();
+	            	
+	            	String dbResult = (String) ois.readObject();
+	            	if(dbResult.equals("authenticated"))
+	            	{
+	            		System.out.println("Thank you " + usernameResponse + ", You are authenticated!");
+	            		break;
+	            	}
+	            	else
+	            	{
+	            		System.out.println("Sorry, your username or password did not work");
+	            	}
+            	}
+            }
+            else {
+            	oos.writeObject("guest");
+            	oos.flush();
+            	
+            	String username = (String) ois.readObject();
+            	System.out.println("Your guest username is " + username);
+            }
 
             Integer num = (Integer) ois.readObject();
 
-            System.out.println("there are "+num+" players on the server");
+            System.out.println("Welcome to Online Uno! There are "+num+" players on the server");
             while (true) {
              //signal game starts
              String s = (String) ois.readObject();
@@ -139,10 +179,10 @@ public static void main(String[] args){
 			//receive list of strings to display hand
 			
 			System.out.println();
-			System.out.print("Current hand: ");
+			System.out.print("Current hand: | ");
 			for(String s : hand)
 			{
-			     System.out.print(s + " ");
+			     System.out.print(s + " | ");
 			}
 			System.out.println("\n");
             
