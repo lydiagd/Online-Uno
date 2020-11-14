@@ -224,7 +224,7 @@ public class GameTable extends Thread {
 //		catch (SocketException e) {
 //		   e.printStackTrace();
 //		 } 
-		finally {
+		finally { //winning p sequence
 			 //notify player clients of the winner
 			   allP = players.q;
 			   for(Player p: allP)
@@ -232,6 +232,8 @@ public class GameTable extends Thread {
 				   p.updateClient("end");
 				   p.updateClient(winningPlayer.GetName() + " won the game.");
 			   }
+			   
+			   //call database update variable
 			}
 	     
 	   }

@@ -98,21 +98,30 @@ public static void main(String[] args){
             Integer num = (Integer) ois.readObject();
 
             System.out.println("Welcome to Online Uno! There are "+num+" players on the server");
+           
+            
+            //patrick start here
             while (true) {
              //signal game starts
              String s = (String) ois.readObject();
              if(s.equals("start"))
              {
             	 System.out.println("starting the game");
+            	 
+            	 //gui needs to start up
+            	 
                 //pass player object
                //create GUI from hand
                //PlayerGUI gui = new PlayerGUI(Card[] hand)
             	 
                  //receive gamestateobj from server
      			GameTableState gs_init = (GameTableState) ois.readObject();
-     			PrintGameTableState(gs_init);
+     			
+     			PrintGameTableState(gs_init); //instead of printing, pass to gui (patrick)
+     			
+     			//need to send strings to back end (card value only)
              
-             //wait for a card array/Player object p 
+     			//wait for a card array/Player object p 
             	 hand = (ArrayList<String>) ois.readObject();
             	 System.out.print("your hand: ");
             	 for(String str : hand)
@@ -132,8 +141,15 @@ public static void main(String[] args){
 			
 			  if(str.equals("your turn"))
 			  {
+				  	//signal to gui whose turn it is
+				  	
 				    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
-				    String card = sc.nextLine();
+				    String card = sc.nextLine(); //info from gui (draw, wildcard, yellow 0, etc)
+				    //gui.getmove() ; while not "none" (null?)
+				    //gui variable that
+				    //while(!gui.var)
+				    
+				    //if(gui.cardChosen.equals("yellow 1"))
 				    
 				    oos.writeObject(card); //signal end turn
 				    oos.flush(); 
@@ -157,19 +173,13 @@ public static void main(String[] args){
 				      //don't worry about error for console version           
 			
 			  }
+			  //else if for not your turn
 			  else if(str.equals("end")) {
 				  String finalMessage = (String) ois.readObject();
 				  System.out.println(finalMessage);
-			  }
-			  else if(str == null) //END PLAYER RUN
-			  {
 				  break;
 			  }
-//              else //if not a command that's recognized, probably player log
-//              {
-//                System.out.println(str);
-//                //update action log for last player's move
-//              }
+
 			
 			//get game state object 
 			GameTableState gs = (GameTableState) ois.readObject();

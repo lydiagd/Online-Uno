@@ -10,7 +10,7 @@ package GameTable;
 public abstract class Card {
 		String color;
 		
-		public Card(String col)
+		Card(String col)
 		{
 			color = col;
 		}

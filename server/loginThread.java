@@ -8,6 +8,7 @@ public class loginThread extends Thread {
 	Server server;
 	Player player;
 	Boolean loggedIn = false;
+	//login gui? Login page?
 	
 	public loginThread(Server s, Player p)
 	{
@@ -20,7 +21,7 @@ public class loginThread extends Thread {
 	
 	public void run() {
 		
-		try {
+		try { //isguest bool in player
 			String guestOrUser = (String) player.ois.readObject();
 			if(guestOrUser.equals("user"))
 			{
@@ -29,7 +30,7 @@ public class loginThread extends Thread {
 					String username = (String) player.ois.readObject();
 					String password = (String) player.ois.readObject();
 					
-					//if found, send good message, else send incorrect login
+					//if found, send good message, else send incorrect login **database**
 					player.SetName(username);
 					loggedIn = true;
 					player.oos.writeObject("authenticated");

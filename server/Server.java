@@ -19,28 +19,27 @@ public class Server {
   	ArrayList<Player> playerList = new ArrayList<Player>(); //saves num players joined
 	int startIdx = 0;
 	int curIdx = 0;
+	Boolean playerJoin = false;
 	ArrayList<GameTable> GameTableList = new ArrayList<GameTable>(); //saves game tables
   
 	  public Server()
 	  {
 		try {
 			ServerSocket sSocket = new ServerSocket(port);
+			//make a server manager thread
+			socketThread socketManager = new socketThread(this, sSocket);
 			System.out.println("Starting Server");
 		
 		    while(true)
 		    {
-		      System.out.println("Searching for connection");
-		      Socket s = sSocket.accept();
-		      Player p = new Player(s); //don't handle username up here
+		    	playerJoin = socketManager.newPlayerJoined;
+//		      Socket s = sSocket.accept();
+		      if(playerJoin == true) {
+			      Player p = new Player(socketManager.s); //don't handle username up here
+			      loginThread l = new loginThread(this,p); //will authenticate user
+			      socketManager.newPlayerJoined = false;
+		      }
 
-		      loginThread l = new loginThread(this,p); //will authenticate user
-//		      playerList.add(p);
-//		      curIdx++;
-//		      p.oos.writeObject(playerList.size()); //tell client how many players are on the server
-//		      p.oos.flush();
-//		      System.out.println("current server size: " + playerList.size());
-		      
-	//	      if(playerList.size() >= roomsize){ //make a room
 		      if((curIdx-startIdx) >= roomsize){
 		    	  
 		    	System.out.println("Starting new room");
@@ -48,27 +47,19 @@ public class Server {
 		        ArrayList<Player> dupPlayerList = new ArrayList<Player>();
 		        for(int i = startIdx; i < curIdx; i++)
 		        {
-	//	        	Socket newS = pl.socket;
-	//	            Player newP = new Player(newS);
 		            dupPlayerList.add(playerList.get(i));
 		            playerList.get(i).oos.writeObject("start");
 		            playerList.get(i).oos.flush();
 		        }
-		        
-		        //looped through
-		        //recreated each variable pass in socket
-		        //playerList.clear()
-		        
+
 		        PlayerQueue pq = new PlayerQueue(dupPlayerList); //!!need deep copy? How to transfer players?
 		        
 		        GameTable gt = new GameTable(pq);
 		        GameTableList.add(gt);
-		        //gt.SetPlayerQueue(pq);
 		        
 		        //maybe?
 		        gt.start();
 		        
-	//	        playerList.clear();
 		        startIdx = curIdx;
 		            
 		    }
