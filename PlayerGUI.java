@@ -30,10 +30,12 @@ import javax.swing.*;
 import GameTable.*;
 
 public class PlayerGUI{
-	public String moveMade = "None";
+	private String moveMade = "None";
 	//handles the dimensions of the pop-up
 	private JFrame frame;
 	private JPanel panel;
+	
+	private JLabel tracker;
 	
 	//labeling of the players and the number of cards in their hands
 	private JLabel player1;
@@ -66,7 +68,10 @@ public class PlayerGUI{
 	private int page = 0;
 	private Card[] playerHand;
 	private String[] names;
+	private String[] usernames;
+	private int[] hands;
 	private boolean canPlay = false;
+	private String myName;
 	
 	//images of the cards in your hand
 	private JLabel hand0;
@@ -79,9 +84,10 @@ public class PlayerGUI{
 	
 	//in the future, GUI should also take in a Player class so that it can tell the back-end whenever a move is made
 	//Constructor of the GUI,
-	public PlayerGUI(Card[] handIn, String username) throws IOException {
+	public PlayerGUI(Card[] handIn, String username, String[] otherPlayers) throws IOException {
 		//create the framework for the application
 		this.playerHand = handIn;
+		this.myName = username;
 		frame = new JFrame();
 		panel = new JPanel();
 		panel.setLayout(null);
@@ -102,7 +108,7 @@ public class PlayerGUI{
 				//only play a card if their hand isn't empty
 				String color = (String) colors.getSelectedItem();
 				String answer = "Wildcard " + color;
-				setFaceUp(answer);
+				//setFaceUp(answer);
 				removeCard("Wildcard");
 				moveMade = answer;
 				select.setVisible(false);
@@ -110,7 +116,10 @@ public class PlayerGUI{
 				wildcard.setVisible(false);
 			}
 		});
-		
+		tracker = new JLabel("");
+		tracker.setFont(new Font("Times New Roman", Font.PLAIN, 18));
+		tracker.setBounds(10, 0, 150, 40);
+		panel.add(tracker);
 		
 		//sets up the image of where the face up cards are going to be placed
 		BufferedImage blankIm = ImageIO.read(new File("CardImages/blank.PNG"));
@@ -183,9 +192,10 @@ public class PlayerGUI{
 						}
 						else{
 						//put the selected card in the face up pile and remove from your hand
-							setFaceUp(answer);
+							//setFaceUp(answer);
 							removeCard(answer);
 							moveMade = answer;
+							System.out.println(moveMade);
 						}
 					}
 				}
@@ -204,22 +214,29 @@ public class PlayerGUI{
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(canPlay) {
-					System.out.println("Play ball");
+					//System.out.println("Play ball");
 					moveMade = "Draw";
+					System.out.println(moveMade);
 				}
 			}
 		});
 		
 		//TODO: create function that updates the other players' num of cards
 		//Text displaying each player in the room and the number of cards each has
+		
+		this.usernames = otherPlayers;
+		hands = new int[3];
+		for(int i = 0; i<3; i++)
+			hands[i] = 7;
+		
 		player1 = new JLabel("You: " + username);
 		cards1 = new JLabel("Cards: " + playerHand.length);
-		player2 = new JLabel("Guest0");
-		cards2 = new JLabel("Cards: " + playerHand.length);
-		player3 = new JLabel("Guest0");
-		cards3 = new JLabel("Cards: " + playerHand.length);
-		player4 = new JLabel("Guest0123456789");
-		cards4 = new JLabel("Cards: " + playerHand.length);
+		player2 = new JLabel(usernames[0]);
+		cards2 = new JLabel("Cards: " + hands[0]);
+		player3 = new JLabel(usernames[1]);
+		cards3 = new JLabel("Cards: " + hands[1]);
+		player4 = new JLabel(usernames[2]);
+		cards4 = new JLabel("Cards: " + hands[2]);
 		
 		//display Player 1's text
 		player1.setBounds(120, 380, 280, 40);
@@ -320,8 +337,21 @@ public class PlayerGUI{
 			for(Card i : cards) {
 				cardsH[x++] = i;
 			}
-			PlayerGUI GUI = new PlayerGUI(cardsH, "I_Hate_This");
+			String[] names = {"HelloWorld", "HelpMe", "NotCheating"}; 
+			PlayerGUI GUI = new PlayerGUI(cardsH, "I_Hate_This", names);
 			GUI.changeTurns(true);
+			while (true) {
+				String response = GUI.getMove();
+				while(GUI.moveMade.compareTo("None") == 0) {response = GUI.getMove();System.out.println(response);}
+				if(response.compareTo("Draw") == 0) {
+					GUI.drawCard(new Wild_Card("Wildcard"));
+					GUI.moveMade = "None";
+				}
+				else {
+					GUI.setFaceUp(response);
+					GUI.moveMade = "None";
+				}
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -425,6 +455,68 @@ public class PlayerGUI{
 		displayHand();
 	}
 	
+	public void setUsername(String user, int player) {
+		switch(player) {
+		case 2:
+			player2.setText(user);
+			player2.setIconTextGap(-184 + (8*(16-player2.getText().length()/2)));
+			player2.setBounds(594-(8*player2.getText().length()/2), 100, 280, 200);
+			usernames[0] = user;
+		case 3:
+			player3.setText(user);
+			player3.setBounds(329-(8*player3.getText().length()/2), 0, 280, 40);
+			usernames[1] = user;
+		case 4:
+			player4.setText(user);
+			player4.setBounds(44-(8*player4.getText().length()/2), 100, 280, 200);
+			player4.setIconTextGap(-184 + (8*(16-player4.getText().length()/2)));
+			usernames[2] = user;
+		default:
+			return;
+		}
+	}
+	
+	public void playMove(String user, Card played, boolean signal) {
+		String response = "";
+		String chat = "";
+		String user2 = user + " has ";
+		if(user.compareTo(myName) == 0)
+			user2 = "You have";
+		if(played == null) {
+			chat = user2 + "drawn a card.";
+			for(int i = 0; i < 3; i++) {
+				if(user.compareTo(usernames[i]) == 0) {
+					hands[i] = hands[i] + 1;
+				}
+			}
+		}
+		else {
+			response = played.stringout();
+			chat = user2 + "played " + response;
+			setFaceUp(response);
+			for(int i = 0; i < 3; i++) {
+				if(user.compareTo(usernames[i]) == 0) {
+					hands[i] = hands[i] - 1;
+					if(hands[i] == 0) {
+						System.out.println("You lose.");
+					}
+				}
+			}
+		}
+		if(signal)
+			chat = chat + " Your turn.";
+	}
+	
+	public void drawCard(Card newCard) {
+		Card[] newHand = new Card[playerHand.length + 1];
+		newHand[0] = newCard;
+		for(int i = 1; i< newHand.length; i++)
+			newHand[i] = playerHand[i-1];
+		playerHand = newHand;
+		cards1.setText("Cards: " + playerHand.length);
+		displayHand();
+	}
+	
 	//helper function to determine which card needs to be updated
 	public JLabel getHandCard(int num) {
 		switch (num) {
@@ -450,5 +542,14 @@ public class PlayerGUI{
 	public void changeTurns(boolean playing) {
 		this.canPlay = playing;
 	}
+	
+	public String getMove() {
+		return moveMade;
+	}
 }
+
+
+//TODO: have it so that player's can get added to the room so it doesn't just start with four
+//TODO: 3-5
+	//create a map that determines which spots(values) to reveal based on the number of players playing(key)
 
