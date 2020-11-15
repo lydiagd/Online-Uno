@@ -53,25 +53,8 @@ public class Player extends Thread {
 			//get card
 			String cardInput = (String) ois.readObject();
 			
-//N			if(cardInput.equals("wildcard"))
-//			{
-//				String newColor = (String) ois.readObject();
-//				for(int i = 0; i < hand.size(); i++)
-//				{
-//					cur = hand.get(i);
-//					if(cur.getColor().equals(cardInput))
-//					{
-//						cur.setColor(newColor);
-//						//remove selected card from hand and put on table's discard stack
-//						table.discardStk.discard(cur); //add to discard stack
-//						hand.remove(i);
-//						break;
-//					}
-//					
-//				}
-//			}
 			//just an if statement
-			else if(cardInput.equals("draw")) //player needs to draw a new card
+			if(cardInput.equals("draw")) //player needs to draw a new card
 			{
 				if(table.drawStk.size() == 0) //if ran out of cards, reload drawStack
 				{
@@ -89,12 +72,12 @@ public class Player extends Thread {
 				//handle wildcard here
 				
 				int cardNum = Integer.parseInt(cardPlayedInfo[1]);
-//Y				String newColor = cardPlayedInfo[0];
-//				if(cardNum == -1)
-//					cardPlayedInfo[0] = "wildcard";
-//				Blue -1
-				
-				
+				String newColor = cardPlayedInfo[0];
+				if(cardNum == -1)
+				{
+					cardPlayedInfo[0] = "wildcard";
+				}
+					
 				for(int i = 0; i < hand.size(); i++)
 				{
 					cur = hand.get(i);
@@ -103,14 +86,13 @@ public class Player extends Thread {
 						//remove selected card from hand and put on table's discard stack
 						table.discardStk.discard(cur); //add to discard stack
 						if(cardNum == -1) {
-//Y							cur.setColor(newColor);
+							cur.setColor(newColor);
 						}
 						hand.remove(i);
 						break;
 					}
 					
 				}
-				//if null catch something
 			}
 			
 			//send updated hand back to client

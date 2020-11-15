@@ -118,10 +118,11 @@ public class GameTable extends Thread {
 	}
 	
 	   //updates GameTableState's lastMove, hand sizes of all players, and top card on the discard stack
-	   public void UpdateGameTableState(String lastMove, List<Player> allPlayers) {
+	   public void UpdateGameTableState(String lastMove, List<Player> allPlayers, ArrayList<String> usernames) {
 		   	 gtState = new GameTableState();
 			 gtState.SetLastMove(lastMove);
 			 gtState.SetTopCard(discardStk.top().stringout());
+			 gtState.SetUsernames(usernames);
 			 HashMap<String, Integer> playerToHandSize = new HashMap<String, Integer>();
 			 for(int i = 0; i < allPlayers.size(); i++)
 			 {
@@ -151,10 +152,13 @@ public class GameTable extends Thread {
 		   System.out.println("Game room successfully started");
 		   Deal(); //ask for usernames?  //TODO: usernames as input by PlayerClients or configured with user authentification?
 		   
+		   ArrayList<String> usernames = new ArrayList<String>();
 		   List<Player> allP = players.q; //force set username?
 		   for(int i = 0; i < allP.size(); i++)
 		   {
 			   Player curP = allP.get(i);
+			   usernames.add(curP.GetName());
+			   
 			   //artificial username
 //			   curP.SetName("player "+ i);
 			   	   
@@ -163,7 +167,7 @@ public class GameTable extends Thread {
 		   }
 		   
 		   //initialize GameTableState
-		   UpdateGameTableState("---", allP);
+		   UpdateGameTableState("---", allP, usernames);
 		   
 		   //send initial GameTableState for each client
 		   SendGameTableStateToClients(allP);
@@ -206,7 +210,7 @@ public class GameTable extends Thread {
 				 
 				 String move = p.Play(); //returns string update
 				 
-				 UpdateGameTableState(move, allP);
+				 UpdateGameTableState(move, allP, usernames);
 				 SendGameTableStateToClients(allP);
 				 
 				 boolean endCondition = p.IsHandEmpty();

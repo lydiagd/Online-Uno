@@ -1,4 +1,4 @@
-package project;
+package server;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 
 //PLAYER CLIENT CLASS
-public class playerClient{
+public class PlayerClient{
   
   Player p;
   private static Socket s;
