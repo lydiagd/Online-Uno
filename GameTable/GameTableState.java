@@ -8,9 +8,18 @@ public class GameTableState implements Serializable {
 	  private HashMap<String, Integer> playersHandSize; //key: username, value: hand size
 	  private String topCard;
 	  private ArrayList<String> usernames;
+	  private boolean isGameComplete;
 	  
 	  public GameTableState() {
-
+		  isGameComplete = false;
+	  }
+	  
+	  public boolean GetIsGameComplete() {
+		  return isGameComplete;
+	  }
+	  
+	  public void SetIsGameComplete(boolean isGameComplete) {
+		  this.isGameComplete = isGameComplete;
 	  }
 	  
 	  public ArrayList<String> GetUsernames() {

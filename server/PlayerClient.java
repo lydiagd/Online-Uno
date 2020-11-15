@@ -20,16 +20,23 @@ public class PlayerClient{
   Player p;
   private static Socket s;
   Boolean turn = false;
-  PlayerGUI gui;
+  private PlayerGUI gui;
   String cardResult;
 
   
   
   @SuppressWarnings({ "unchecked", "unused" })
-public static void main(String[] args){
+  
+  public static void main(String[] args)
+  {
+	  PlayerClient pc = new PlayerClient();
+  }
+  
+  
+public PlayerClient() {
 	  Scanner sc = new Scanner(System.in);
 	  ArrayList<String> hand; // color #
-//Y	  String username;
+	  String username = null;
        while (true) {
               String ans = null;
               try {
@@ -91,8 +98,7 @@ public static void main(String[] args){
             	oos.writeObject("guest");
             	oos.flush();
             	
-            	String username = (String) ois.readObject();
-//Y            	username = (String) ois.readObject();
+            	username = (String) ois.readObject();
             	System.out.println("Your guest username is " + username);
             }
 
@@ -109,26 +115,22 @@ public static void main(String[] args){
             	 
                  //receive gamestateobj from server
      			GameTableState gs_init = (GameTableState) ois.readObject();
-//N     			PrintGameTableState(gs_init);
+//T     			PrintGameTableState(gs_init);
              
              //wait for a card array/Player object p 
             	 hand = (ArrayList<String>) ois.readObject();
-//N            	 System.out.print("your hand: ");
+//T            	 System.out.print("your hand: ");
 //            	 for(String str : hand)
 //            	 {
 //            		 System.out.print(" | " + str + " | ");
 //            	 }
             	 
-//Y            	 this.gui = new PlayerGUI(username, ArrayList<String>);
-              
+            	 gui = new PlayerGUI(hand, username);
+            	 gui.setUsername((String[])gs_init.GetUsernames().toArray());
             	 break;
              }
             }
-          
-            //need to get the usernames from the other players
-            //read in a String[4] of the four players 1 2 3 4
-            //pass in a String[3] to the GUI.setUsername() function
-            //gui.setUsernames(String[])
+                   
             
           while(true){
 
@@ -138,26 +140,14 @@ public static void main(String[] args){
 			
 			  if(str.equals("your turn"))
 			  {
-//N				    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
-//				    String card = sc.nextLine();
 				  
 				  
-//Y				    String card = gui.getMove()
-//				    gui.yourTurn()
-//				    while(card.equals("None")){ card = gui.getMove();}
+				    String card = gui.getMove();
+				    gui.yourTurn();
+				    while(card.equals("None")){ card = gui.getMove();}
 				    oos.writeObject(card); //signal end turn
 				    oos.flush(); 
-				    
-//N				    if(card.equals("wildcard"))
-//				    {
-//				    	System.out.print("enter color to change to: ");
-//				    	String newColor = sc.nextLine();
-//				    	
-//				    	oos.writeObject(newColor);
-//				    	oos.flush();
-//				    }
-				   
-				    
+				  
 				    //if you write a Card played, we don't need to read anything but just update the GUI
 				    //if you write a "draw", grab a card from the GameTable Deck and give it to the GUI
 				    
@@ -165,14 +155,8 @@ public static void main(String[] args){
 //Let's keep the array
 				    //update yourself, display hand
 				    hand = (ArrayList<String>) ois.readObject();
-				    gui.setHand(hand);
-				    
-				    //play your turn based from GUI
-				      //while(gui.moveMade == "NONE"){}
-				      //cardResult = gui.moveMade; //store in a string
-				      
-				      //don't worry about error for console version           
-//Y				    gui.setMove()			
+				    //gui.setHand(hand);
+				    gui.setMove();			
 			  }
 			  else if(str.equals("end")) {
 				  String finalMessage = (String) ois.readObject();
@@ -190,16 +174,16 @@ public static void main(String[] args){
 			
 			//get game state object 
 			GameTableState gs = (GameTableState) ois.readObject();
-//N			PrintGameTableState(gs);
+//T			PrintGameTableState(gs);
 
 			//need the user who played it and the card played or if they drew
-//Y			gui.playMove(user?, gs.getLastMove())
+			//gui.playMove(gs.GetLastMove());
 			//Player2 has played Blue -1
 			
 
 			//receive list of strings to display hand
 			
-//N			System.out.println();
+//T			System.out.println();
 //			System.out.print("Current hand: | ");
 //			for(String s : hand)
 //			{
@@ -210,7 +194,7 @@ public static void main(String[] args){
             
         }  
 
-          
+        while(true) { } //keep PlayerClient running so gui doesn't terminate
  
         } catch (SocketException se) {
             System.out.println(" Server dropped connection");
@@ -222,6 +206,7 @@ public static void main(String[] args){
     
   }
   
+  //TODO: delete this after testing
   //prints the last player move, the hand sizes of each player, and the top card on the discard stack
   public static void PrintGameTableState(GameTableState gs) {
 		System.out.println("Last move: " + gs.GetLastMove());
