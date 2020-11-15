@@ -11,7 +11,7 @@ public class Wild_Card extends Card {
 
 	@Override
 	public String stringout() {
-		return (super.color);
+		return (super.color + " " + this.getNumber());
 	}
 
 
