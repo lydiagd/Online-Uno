@@ -15,9 +15,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 //
 //
-//TODO:
-//Only allow for Player to modify Player GUI
-//Add Wildcard Card
+//TODO:  setFaceUp is for the playerCLient not me, print out the winner
 //Only play viable moves
 //
 //
@@ -136,8 +134,8 @@ public class PlayerGUI{
 					//if they are able to play their last card, they win
 					if(names.length==1)
 						System.out.println("YOU WIN!");
-					String answer = (String)hand.getSelectedItem();
-					if(answer.compareTo("Wildcard") == 0) {
+						String answer = (String)hand.getSelectedItem();
+						if(answer.compareTo("Wildcard") == 0) {
 						select.setVisible(true);
 						colors.setVisible(true);
 						wildcard.setVisible(true);
@@ -145,6 +143,8 @@ public class PlayerGUI{
 					else{
 					//put the selected card in the face up pile and remove from your hand
 						moveMade = answer;
+						//setFaceUp(answer);
+						//removeCard(answer);
 					}
 				}
 				
@@ -157,6 +157,7 @@ public class PlayerGUI{
 				String color = (String) colors.getSelectedItem();
 				String answer = color + " -1";
 				//setFaceUp(answer);
+				//removeCard(answer);
 				moveMade = answer;
 				select.setVisible(false);
 				colors.setVisible(false);
@@ -261,14 +262,21 @@ public class PlayerGUI{
 		try {
 			ArrayList<String> cards = new ArrayList<String>();
 			cards.add(("Wildcard"));
-			cards.add(("Yellow 4"));
-			cards.add(("Red 5"));
+			cards.add(("yellow 4"));
+			cards.add(("red 5"));
+			cards.add("blue 4");
+			cards.add("green 4");
+			cards.add("red 1");
+			cards.add("yellow 9");
 			
 			String[] others = {"Player2FillerTex", "Player3", "Player4"}; 
-			PlayerGUI GUI = new PlayerGUI(cards, "I_Hate_This");
+			PlayerGUI GUI = new PlayerGUI(cards, "I");
 			GUI.setUsername(others);
 			
-//			GUI.playMove("Player3", "Yellow -1");
+			//check if You play the card
+			GUI.playMove("I played yellow -1");
+			GUI.playMove("I played red 1");
+			GUI.playMove("I played draw");
 //			GUI.playMove("Player4", "draw");
 			GUI.yourTurn();
 //			while (true) {
@@ -353,11 +361,16 @@ public class PlayerGUI{
 				catch(IOException ex) {}
 			}
 		}
+		pages.setText("Page " + (page+1) + " of " + ((names.length-1)/7 + 1));
 	}
 	
 	//remove a card from the drop down menu and from your playerHand array
 	private void removeCard(String temp) {
+		
 		hand.removeAllItems();
+		String[] parse = temp.split("\s");
+		if(parse[1].equals("-1"))
+			temp = "Wildcard";
 		String[] newNames = new String[names.length - 1];
 		boolean removed = false;
 		int j = 0;
@@ -381,7 +394,7 @@ public class PlayerGUI{
 	}
 	
 	//updates your hand variable
-	private void setHand(List<String> cards) {
+	public void setHand(List<String> cards) {
 		this.names = new String[cards.size()];
 		for(int i = 0; i <cards.size(); i++)
 			names[i] = cards.get(i);
@@ -417,12 +430,24 @@ public class PlayerGUI{
 		player4.setBounds(44-(2*player4.getText().length()), 100, 280, 200);
 	}
 	
-	public void playMove(String user, String played) {
+	public void playMove(String moveMade) {
+		String[] parsing = moveMade.split("\s");
+		String user = parsing[0];
+		String played;
+		if(parsing.length == 3) {
+			played = "draw";
+		}
+		else {
+			played = parsing[2] + " " + parsing[3];
+		}
 		String response = "";
 		String chat = "";
 		String user2 = user + " has ";
-		if(user.equals(myName))
-			user2 = "You have";
+		if(user.equals(myName)) {
+			user2 = "You have ";
+			if(!played.equals("draw"))
+				removeCard(played);
+		}
 		if(played.equals("draw")) {
 			chat = user2 + "drawn a card.";
 			for(int i = 0; i < 3; i++) {
@@ -487,6 +512,7 @@ public class PlayerGUI{
 	}
 
 	public String getMove() {
+		while(moveMade.equals("None")) {}
 		return moveMade;
 	}
 	public void setMove() {
