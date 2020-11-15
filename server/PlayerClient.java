@@ -1,12 +1,12 @@
-package server;
+package project.server;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
-import GameTable.GameTableState;
-import GameTable.Player;
+import project.GameTable.GameTableState;
+import project.GameTable.Player;
 //import PlayerGUI;
 
 import java.io.IOException;
@@ -124,9 +124,27 @@ public PlayerClient() {
 //            	 {
 //            		 System.out.print(" | " + str + " | ");
 //            	 }
-            	 
+            	 ArrayList<String> temp = gs_init.GetUsernames();
             	 gui = new PlayerGUI(hand, username, gs_init.GetTopCard());
-            	 gui.setUsername((String[])gs_init.GetUsernames().toArray());
+            	 int idx = 0;
+        	   	 boolean start = false;
+        	   	 String[] temp2 = new String[temp.size()-1];
+        	   	 for(int i = 0; i < temp.size(); i++) {
+        	   		 if (idx == temp2.length) {
+        	   			 break;
+        	   		 }
+        	   		 if(username.equals(temp.get(i))) {
+        	   			 start = true;
+        	   		 }
+        	   		 else {
+        	   			 if(start)
+        	   				 temp2[idx++] = temp.get(i);
+        	   		 }
+        	   		 if(i == temp.size() -1) {
+        	   			 i = -1;
+        	   		 }
+        	   	 }
+            	 gui.setUsername(temp2);
             	 break;
             	 
              }
@@ -138,10 +156,10 @@ public PlayerClient() {
             //read in strings from server side
 
 			 String str = (String) ois.readObject();
-			
+			System.out.println(str);
 			  if(str.equals("your turn"))
 			  {
-				  
+				  System.out.println("help");
 				    gui.setMove();	
 				    String card = gui.getMove();
 				    gui.yourTurn();
@@ -173,7 +191,7 @@ public PlayerClient() {
 //                System.out.println(str);
 //                //update action log for last player's move
 //              }
-			
+			System.out.println("end");
 			//get game state object 
 			GameTableState gs = (GameTableState) ois.readObject();
 //T			PrintGameTableState(gs);
