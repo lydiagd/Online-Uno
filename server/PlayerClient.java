@@ -1,4 +1,4 @@
-package server;
+package project;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
@@ -15,12 +15,12 @@ import java.io.ObjectOutputStream;
 import java.net.*;
 
 //PLAYER CLIENT CLASS
-public class PlayerClient{
+public class playerClient{
   
   Player p;
   private static Socket s;
   Boolean turn = false;
-  //PlayerGUI gui;
+  PlayerGUI gui;
   String cardResult;
 
   
@@ -29,7 +29,7 @@ public class PlayerClient{
 public static void main(String[] args){
 	  Scanner sc = new Scanner(System.in);
 	  ArrayList<String> hand; // color #
-	  
+//Y	  String username;
        while (true) {
               String ans = null;
               try {
@@ -92,47 +92,44 @@ public static void main(String[] args){
             	oos.flush();
             	
             	String username = (String) ois.readObject();
+//Y            	username = (String) ois.readObject();
             	System.out.println("Your guest username is " + username);
             }
 
             Integer num = (Integer) ois.readObject();
 
             System.out.println("Welcome to Online Uno! There are "+num+" players on the server");
-           
-            
-            //patrick start here
             while (true) {
              //signal game starts
              String s = (String) ois.readObject();
              if(s.equals("start"))
              {
             	 System.out.println("starting the game");
-            	 
-            	 //gui needs to start up
-            	 
                 //pass player object
-               //create GUI from hand
-               //PlayerGUI gui = new PlayerGUI(Card[] hand)
             	 
                  //receive gamestateobj from server
      			GameTableState gs_init = (GameTableState) ois.readObject();
-     			
-     			PrintGameTableState(gs_init); //instead of printing, pass to gui (patrick)
-     			
-     			//need to send strings to back end (card value only)
+//N     			PrintGameTableState(gs_init);
              
-     			//wait for a card array/Player object p 
+             //wait for a card array/Player object p 
             	 hand = (ArrayList<String>) ois.readObject();
-            	 System.out.print("your hand: ");
-            	 for(String str : hand)
-            	 {
-            		 System.out.print(" | " + str + " | ");
-            	 }
+//N            	 System.out.print("your hand: ");
+//            	 for(String str : hand)
+//            	 {
+//            		 System.out.print(" | " + str + " | ");
+//            	 }
+            	 
+//Y            	 this.gui = new PlayerGUI(username, ArrayList<String>);
               
             	 break;
              }
             }
           
+            //need to get the usernames from the other players
+            //read in a String[4] of the four players 1 2 3 4
+            //pass in a String[3] to the GUI.setUsername() function
+            //gui.setUsernames(String[])
+            
           while(true){
 
             //read in strings from server side
@@ -141,65 +138,76 @@ public static void main(String[] args){
 			
 			  if(str.equals("your turn"))
 			  {
-				  	//signal to gui whose turn it is
-				  	
-				    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
-				    String card = sc.nextLine(); //info from gui (draw, wildcard, yellow 0, etc)
-				    //gui.getmove() ; while not "none" (null?)
-				    //gui variable that
-				    //while(!gui.var)
-				    
-				    //if(gui.cardChosen.equals("yellow 1"))
-				    
+//N				    System.out.println("Your turn!\n Enter a card: "); //format is "yellow 6"
+//				    String card = sc.nextLine();
+				  
+				  
+//Y				    String card = gui.getMove()
+//				    gui.yourTurn()
+//				    while(card.equals("None")){ card = gui.getMove();}
 				    oos.writeObject(card); //signal end turn
 				    oos.flush(); 
 				    
-				    if(card.equals("wildcard"))
-				    {
-				    	System.out.print("enter color to change to: ");
-				    	String newColor = sc.nextLine();
-				    	
-				    	oos.writeObject(newColor);
-				    	oos.flush();
-				    }
+//N				    if(card.equals("wildcard"))
+//				    {
+//				    	System.out.print("enter color to change to: ");
+//				    	String newColor = sc.nextLine();
+//				    	
+//				    	oos.writeObject(newColor);
+//				    	oos.flush();
+//				    }
 				   
+				    
+				    //if you write a Card played, we don't need to read anything but just update the GUI
+				    //if you write a "draw", grab a card from the GameTable Deck and give it to the GUI
+				    
+				    
+//Let's keep the array
 				    //update yourself, display hand
 				    hand = (ArrayList<String>) ois.readObject();
+				    gui.setHand(hand);
 				    
 				    //play your turn based from GUI
 				      //while(gui.moveMade == "NONE"){}
 				      //cardResult = gui.moveMade; //store in a string
 				      
 				      //don't worry about error for console version           
-			
+//Y				    gui.setMove()			
 			  }
-			  //else if for not your turn
 			  else if(str.equals("end")) {
 				  String finalMessage = (String) ois.readObject();
 				  System.out.println(finalMessage);
+			  }
+			  else if(str == null) //END PLAYER RUN
+			  {
 				  break;
 			  }
-
+//              else //if not a command that's recognized, probably player log
+//              {
+//                System.out.println(str);
+//                //update action log for last player's move
+//              }
 			
 			//get game state object 
 			GameTableState gs = (GameTableState) ois.readObject();
-			PrintGameTableState(gs);
+//N			PrintGameTableState(gs);
+
+			//need the user who played it and the card played or if they drew
+//Y			gui.playMove(user?, gs.getLastMove())
+			//Player2 has played Blue -1
 			
 
 			//receive list of strings to display hand
 			
-			System.out.println();
-			System.out.print("Current hand: | ");
-			for(String s : hand)
-			{
-			     System.out.print(s + " | ");
-			}
-			System.out.println("\n");
+//N			System.out.println();
+//			System.out.print("Current hand: | ");
+//			for(String s : hand)
+//			{
+//			     System.out.print(s + " | ");
+//			}
+//			System.out.println("\n");
             
-            //gui.update
             
-            //update top card
-            //gui.setFaceUp(Card top)
         }  
 
           
