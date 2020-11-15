@@ -12,7 +12,7 @@ import GameTable.PlayerQueue;
 
 public class Server {
   public static final int rooms = 3;
-  public static final int roomsize = 2;
+  public static final int roomsize = 4;
   public static final int maxPlayers = 20;
   //have port be 1024<=port<=49151 since they can be used by any app
   public static final int port = 1234;   

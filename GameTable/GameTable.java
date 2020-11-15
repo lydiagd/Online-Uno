@@ -153,7 +153,7 @@ public class GameTable extends Thread {
 		   System.out.println("Game room successfully started");
 		   Deal(); //ask for usernames?  //TODO: usernames as input by PlayerClients or configured with user authentification?
 		   
-		   ArrayList<String> usernames = new ArrayList<String>();
+		   ArrayList<String> usernames = new ArrayList<String>(4);
 		   List<Player> allP = players.q; //force set username?
 		   for(int i = 0; i < allP.size(); i++)
 		   {

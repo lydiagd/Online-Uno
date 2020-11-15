@@ -74,8 +74,8 @@ public PlayerClient() {
             	{
 	       
 	            	System.out.print("Username: ");
-	            	String usernameResponse = sc.nextLine();
-	            	oos.writeObject(usernameResponse);
+	            	username = sc.nextLine();
+	            	oos.writeObject(username);
 	            	oos.flush();
 	            	System.out.print("Password: ");
 	            	String passResponse = sc.nextLine();
@@ -85,7 +85,7 @@ public PlayerClient() {
 	            	String dbResult = (String) ois.readObject();
 	            	if(dbResult.equals("authenticated"))
 	            	{
-	            		System.out.println("Thank you " + usernameResponse + ", You are authenticated!");
+	            		System.out.println("Thank you " + username + ", You are authenticated!");
 	            		break;
 	            	}
 	            	else
@@ -125,9 +125,10 @@ public PlayerClient() {
 //            		 System.out.print(" | " + str + " | ");
 //            	 }
             	 
-            	 gui = new PlayerGUI(hand, username);
+            	 gui = new PlayerGUI(hand, username, gs_init.GetTopCard());
             	 gui.setUsername((String[])gs_init.GetUsernames().toArray());
             	 break;
+            	 
              }
             }
                    
@@ -141,9 +142,10 @@ public PlayerClient() {
 			  if(str.equals("your turn"))
 			  {
 				  
-				  
+				    gui.setMove();	
 				    String card = gui.getMove();
 				    gui.yourTurn();
+				    
 				    while(card.equals("None")){ card = gui.getMove();}
 				    oos.writeObject(card); //signal end turn
 				    oos.flush(); 
