@@ -1,4 +1,4 @@
-package project;
+package project.server;
 
 import java.awt.Font;
 import java.awt.Image;
@@ -25,8 +25,6 @@ import javax.swing.*;
 //
 //
 //
-
-import GameTable.*;
 
 public class PlayerGUI{
 	private String moveMade = "None";
@@ -63,6 +61,7 @@ public class PlayerGUI{
 	private String[] usernames;
 	private int[] hands;
 	private String myName;
+	private boolean turn = false;
 	
 	//images of the cards in your hand
 	private JLabel hand0, hand1, hand2, hand3, hand4, hand5, hand6;
@@ -70,9 +69,8 @@ public class PlayerGUI{
 	
 	//in the future, GUI should also take in a Player class so that it can tell the back-end whenever a move is made
 	//Constructor of the GUI,
-	public PlayerGUI(List<String> handIn, String username) throws IOException {
+	public PlayerGUI(List<String> handIn, String username, String firstCard) throws IOException {
 		//create the framework for the application
-		
 		this.myName = username;
 		frame = new JFrame();
 		panel = new JPanel();
@@ -99,6 +97,7 @@ public class PlayerGUI{
 		Image resizeBlank = blankIm.getScaledInstance(100, -1, 0);
 		blank = new JLabel(new ImageIcon(resizeBlank));
 		blank.setBounds(355, 140, 110, 200); panel.add(blank);
+		setFaceUp(firstCard);
 		
 		//sets up the image of where the face down deck is going to be placed
 		BufferedImage backIm = ImageIO.read(new File("CardImages/back.PNG"));
@@ -261,7 +260,7 @@ public class PlayerGUI{
 	public static void main(String[] args) throws InterruptedException {
 		try {
 			ArrayList<String> cards = new ArrayList<String>();
-			cards.add(("Wildcard"));
+			cards.add(("wildcard"));
 			cards.add(("yellow 4"));
 			cards.add(("red 5"));
 			cards.add("blue 4");
@@ -270,13 +269,10 @@ public class PlayerGUI{
 			cards.add("yellow 9");
 			
 			String[] others = {"Player2FillerTex", "Player3", "Player4"}; 
-			PlayerGUI GUI = new PlayerGUI(cards, "I");
+			PlayerGUI GUI = new PlayerGUI(cards, "I", "Blue 4");
 			GUI.setUsername(others);
 			
 			//check if You play the card
-			GUI.playMove("I played yellow -1");
-			GUI.playMove("I played red 1");
-			GUI.playMove("I played draw");
 //			GUI.playMove("Player4", "draw");
 			GUI.yourTurn();
 //			while (true) {
