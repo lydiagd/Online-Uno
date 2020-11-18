@@ -156,15 +156,16 @@ public PlayerClient() {
             //read in strings from server side
 
 			 String str = (String) ois.readObject();
-			System.out.println(str);
 			  if(str.equals("your turn"))
 			  {
-				  System.out.println("help");
 				    gui.setMove();	
 				    String card = gui.getMove();
 				    gui.yourTurn();
-				    
-				    while(card.equals("None")){ card = gui.getMove();}
+				    while(card.equals("None")){ 
+				    	card = gui.getMove(); 
+				    	TimeUnit.MILLISECONDS.sleep(40);
+				    }
+				    System.out.println(card);
 				    oos.writeObject(card); //signal end turn
 				    oos.flush(); 
 				  
@@ -175,7 +176,7 @@ public PlayerClient() {
 //Let's keep the array
 				    //update yourself, display hand
 				    hand = (ArrayList<String>) ois.readObject();
-				    //gui.setHand(hand);
+				    gui.setHand(hand);
 				    gui.setMove();			
 			  }
 			  else if(str.equals("end")) {
@@ -191,13 +192,12 @@ public PlayerClient() {
 //                System.out.println(str);
 //                //update action log for last player's move
 //              }
-			System.out.println("end");
 			//get game state object 
 			GameTableState gs = (GameTableState) ois.readObject();
 //T			PrintGameTableState(gs);
 
 			//need the user who played it and the card played or if they drew
-			//gui.playMove(gs.GetLastMove());
+			gui.playMove(gs.GetLastMove());
 			//Player2 has played Blue -1
 			
 
@@ -222,7 +222,10 @@ public PlayerClient() {
             ioe.printStackTrace();
         } catch (ClassNotFoundException cnfe) {
             System.out.println(cnfe.getMessage());
-        }
+        } catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     
   }
   
