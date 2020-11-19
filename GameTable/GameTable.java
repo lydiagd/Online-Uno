@@ -224,7 +224,16 @@ public class GameTable extends Thread {
 					 SendGameTableStateToClients(allP);
 				 }
 				 
+				 String[] parsing = move.split("\s");
+				 if(parsing.length == 4) {
+					 if(parsing[3].equals("reverse"))
+						 players.reverse();
+					 else
+						 players.NextTurn();
+				 }
+				 else {
 				 players.NextTurn(); //swap to next turn
+				 }
 			 }
 			 
 		 } 
