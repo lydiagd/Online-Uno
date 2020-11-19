@@ -20,7 +20,9 @@ public class PlayerQueue {
 	public void AddPlayer(Player p) {
 		q.add(p);
 	}
-	
+	public void reverse() {
+		Collections.reverse(q);
+	}
 	public void RemovePlayer(Player p) {
 		q.remove(p);
 	}
