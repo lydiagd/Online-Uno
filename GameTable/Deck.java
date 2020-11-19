@@ -19,6 +19,9 @@ public class Deck {
       {
         cards.add(new Normal_Card(c, i%9)); //create a normal card
       }
+      for(int i = 0; i <2; i++)
+    	cards.add(new Reverse_Card(c));
+	
     }
     
     for(int i = 0; i < 10; i++) //add wildcards to the deck
