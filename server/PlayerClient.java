@@ -146,11 +146,8 @@ public PlayerClient() {
 			  }
 			  else if(str.equals("end")) {
 				  String finalMessage = (String) ois.readObject();
+				  gui.displayEnd(finalMessage);
 				  System.out.println(finalMessage);
-			  }
-			  else if(str == null) //END PLAYER RUN
-			  {
-				  break;
 			  }
 //              else //if not a command that's recognized, probably player log
 //              {
