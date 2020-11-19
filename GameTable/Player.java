@@ -70,7 +70,9 @@ public class Player extends Thread {
 			//this is assuming the card is a viable move
 				String[] cardPlayedInfo = cardInput.split(" "); //assuming this is in format "blue 3"
 				//handle wildcard here
-				
+				if(cardPlayedInfo[1].equals("reverse")) {
+					cardPlayedInfo[1] = "10";
+				}
 				int cardNum = Integer.parseInt(cardPlayedInfo[1]);
 				String newColor = cardPlayedInfo[0];
 				if(cardNum == -1)
