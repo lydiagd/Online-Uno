@@ -1,12 +1,15 @@
-package project.server;
+//package project.server;
+package server;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.*;
 
-import project.GameTable.GameTableState;
-import project.GameTable.Player;
+import GameTable.GameTableState;
+import GameTable.Player;
+//import project.GameTable.GameTableState;
+//import project.GameTable.Player;
 //import PlayerGUI;
 
 import java.io.IOException;
@@ -62,49 +65,11 @@ public PlayerClient() {
             ObjectInputStream ois = new ObjectInputStream(s.getInputStream());
             ObjectOutputStream oos = new ObjectOutputStream(s.getOutputStream());
             
-            //enter username
-            System.out.println("Are you a guest or a user? ");
-            String response = sc.nextLine();
+            //get login credentials
+            ClientLogin cl = new ClientLogin();
+            username = cl.getLoginCred(oos, ois, sc); //pass in output and input stream with scanner
             
-            if(response.equals("user"))
-            {
-            	oos.writeObject("user");
-            	oos.flush();
-            	while(true)
-            	{
-	       
-	            	System.out.print("Username: ");
-	            	username = sc.nextLine();
-	            	oos.writeObject(username);
-	            	oos.flush();
-	            	System.out.print("Password: ");
-	            	String passResponse = sc.nextLine();
-	            	oos.writeObject(passResponse);
-	            	oos.flush();
-	            	
-	            	String dbResult = (String) ois.readObject();
-	            	if(dbResult.equals("authenticated"))
-	            	{
-	            		System.out.println("Thank you " + username + ", You are authenticated!");
-	            		break;
-	            	}
-	            	else
-	            	{
-	            		System.out.println("Sorry, your username or password did not work");
-	            	}
-            	}
-            }
-            else {
-            	oos.writeObject("guest");
-            	oos.flush();
-            	
-            	username = (String) ois.readObject();
-            	System.out.println("Your guest username is " + username);
-            }
-
-            Integer num = (Integer) ois.readObject();
-
-            System.out.println("Welcome to Online Uno! There are "+num+" players on the server");
+            //start game sequence
             while (true) {
              //signal game starts
              String s = (String) ois.readObject();
