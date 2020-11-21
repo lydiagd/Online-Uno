@@ -238,9 +238,29 @@ public class GameTable extends Thread {
 			   {
 				   p.updateClient("end");
 				   p.updateClient(winningPlayer.GetName() + " won the game.");
+				   
+				   // DB PORTION START
+				   String correct = p.GetName().substring(0, p.GetName().indexOf("("));
+				   
+				   // check if player is winner or loser
+				   if(p.GetName().compareTo(winningPlayer.GetName()) == 0)
+				   {
+					   // add a win to the player
+					   try {
+						   if(db_connect.userExists(correct)) db_connect.addWin(correct);
+					   }
+					   catch (Exception ex) { }
+				   }
+				   else
+				   {
+					   // add a loss to the player
+					   try {
+						   if(db_connect.userExists(correct)) db_connect.addLoss(correct);
+					   }
+					   catch (Exception ex) { }
+				   }
+				   // DB PORTION END
 			   }
-			   
-			   //call database update variable
 			}
 	     
 	   }
