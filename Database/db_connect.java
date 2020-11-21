@@ -177,4 +177,16 @@ public class db_connect {
 		// return whether the user is valid or not
 		return answer;
 	}
+	
+	public static Boolean checkAlphaNum(String s)
+	{
+		for(int i = 0; i < s.length(); ++i)
+		{
+		    if(!Character.isLetterOrDigit(s.charAt(i)))
+		    {
+			return false;
+		    }
+		}
+		return true;
+	}
 }
