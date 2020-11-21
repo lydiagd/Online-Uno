@@ -1,4 +1,6 @@
 package server;
+
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Insets;
@@ -9,23 +11,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-//
-//
-//TODO:  setFaceUp is for the playerCLient not me, print out the winner
-//Only play viable moves
-//
-//
-//
-//
-//
-//
-//
-//
 
-import GameTable.*;
 
 public class PlayerGUI{
 	private String moveMade = "None";
@@ -39,7 +29,7 @@ public class PlayerGUI{
 	private JLabel player1, player2, player3, player4;
 
 	private JLabel cards1, cards2, cards3, cards4;
-	private JLabel pages;
+	private JLabel pages, invalid;
 	
 	//the facedown  and faceup piles
 	private JLabel blank;
@@ -62,6 +52,10 @@ public class PlayerGUI{
 	private String[] usernames;
 	private int[] hands;
 	private String myName;
+	private boolean turn = false;
+	private String currCard;
+	
+	private JLabel gameOver, winUser, sorry;
 	
 	//images of the cards in your hand
 	private JLabel hand0, hand1, hand2, hand3, hand4, hand5, hand6;
@@ -71,20 +65,28 @@ public class PlayerGUI{
 	//Constructor of the GUI,
 	public PlayerGUI(List<String> handIn, String username, String firstCard) throws IOException {
 		//create the framework for the application
-		
 		this.myName = username;
+		this.currCard = firstCard;
 		frame = new JFrame();
 		panel = new JPanel();
 		panel.setLayout(null);
 		
 		pages = new JLabel("");
+		invalid = new JLabel("Invalid Move. Try Again."); invalid.setBounds(10, 40, 200, 40);
+		invalid.setVisible(false); panel.add(invalid);
 		
-		play = new JButton("Play");
-		nextPage = new JButton("Next Page");
+		play = new JButton("Play"); nextPage = new JButton("Next Page");
+		
+		gameOver = new JLabel("GAME OVER!"); winUser = new JLabel(" won the game!"); sorry = new JLabel("You lost, sorry man.");
+		gameOver.setBounds(160, -100, 500, 400); winUser.setBounds(225, 300, 500, 100); sorry.setBounds(280, 330, 200, 100);
+		gameOver.setVisible(false); winUser.setVisible(false); sorry.setVisible(false);
+		gameOver.setForeground(Color.red); gameOver.setFont(new Font("Arial Black", Font.PLAIN, 50));
+		winUser.setFont(new Font("Times New Roman", Font.PLAIN, 30));
+		panel.add(gameOver); panel.add(winUser); panel.add(sorry);
 		
 		
 		wildcard = new JLabel("What color?");
-		String[] unoColors = {"Yellow", "Red", "Green", "Blue"};
+		String[] unoColors = {"yellow", "red", "green", "blue"};
 		colors = new JComboBox(unoColors);
 		select = new JButton("Select");
 
@@ -94,14 +96,14 @@ public class PlayerGUI{
 		panel.add(tracker);
 		
 		//sets up the image of where the face up cards are going to be placed
-		BufferedImage blankIm = ImageIO.read(new File("CardImages/blank.PNG"));
+		BufferedImage blankIm = ImageIO.read(new File("src/CardImages/blank.PNG"));
 		Image resizeBlank = blankIm.getScaledInstance(100, -1, 0);
 		blank = new JLabel(new ImageIcon(resizeBlank));
 		blank.setBounds(355, 140, 110, 200); panel.add(blank);
 		setFaceUp(firstCard);
 		
 		//sets up the image of where the face down deck is going to be placed
-		BufferedImage backIm = ImageIO.read(new File("CardImages/back.PNG"));
+		BufferedImage backIm = ImageIO.read(new File("src/CardImages/back.PNG"));
 		Image resizeBack = backIm.getScaledInstance(100, -1, 0);
 		back = new JButton(new ImageIcon(resizeBack));
 		back.setBounds(225, 165, 100, 150); panel.add(back);
@@ -117,12 +119,11 @@ public class PlayerGUI{
 		hand4 = new JLabel(new ImageIcon(resizeHand));hand4.setBounds(335, 400, 60, 120);panel.add(hand4);
 		hand5 = new JLabel(new ImageIcon(resizeHand));hand5.setBounds(415, 400, 60, 120);panel.add(hand5);
 		hand6 = new JLabel(new ImageIcon(resizeHand));hand6.setBounds(495, 400, 60, 120);panel.add(hand6);
-		
+		hand = new JComboBox();
 		setHand(handIn);
 		
 		//create drop down menu based on the array of cards provided
 
-		hand = new JComboBox(names);
 		
 		//TODO: implement function that determines if the card selected is a valid play
 		//when the player clicks the Play button, the card selected by the drop down is played
@@ -132,19 +133,30 @@ public class PlayerGUI{
 					
 				if(names.length > 0) {
 					//if they are able to play their last card, they win
-					if(names.length==1)
-						System.out.println("YOU WIN!");
-						String answer = (String)hand.getSelectedItem();
-						if(answer.compareTo("Wildcard") == 0) {
+					String answer = (String)hand.getSelectedItem();
+					if(answer.compareTo("wildcard") == 0) {
 						select.setVisible(true);
 						colors.setVisible(true);
 						wildcard.setVisible(true);
 					}
 					else{
+						String[] query = currCard.split("\s");
+						String[] selection = answer.split("\s");
+						System.out.println(currCard + "  " + answer);
+						if(query[0].equals(selection[0]) || query[1].equals(selection[1])) {
+							invalid.setVisible(false);
+							select.setVisible(false);
+							colors.setVisible(false);
+							wildcard.setVisible(false);
+							
+							moveMade = answer;
+						}
+						else {
+							invalid.setVisible(true);
+						}
 					//put the selected card in the face up pile and remove from your hand
-						moveMade = answer;
-						//setFaceUp(answer);
-						//removeCard(answer);
+//						setFaceUp(answer);
+//						removeCard(answer);
 					}
 				}
 				
@@ -156,9 +168,10 @@ public class PlayerGUI{
 				//only play a card if their hand isn't empty
 				String color = (String) colors.getSelectedItem();
 				String answer = color + " -1";
-				//setFaceUp(answer);
-				//removeCard(answer);
+//				setFaceUp(answer);
+//				removeCard(answer);
 				moveMade = answer;
+				invalid.setVisible(false);
 				select.setVisible(false);
 				colors.setVisible(false);
 				wildcard.setVisible(false);
@@ -174,17 +187,15 @@ public class PlayerGUI{
 			}
 		});
 		
-		//TODO: call another function that tells the Server that this player needs another card to add to their hand
-		//when you click the face down deck, you should draw a card. Hasn't been created yet so it says Play Ball because I was watching a Dodgers game
+	
+		//when you click the face down deck, you should draw a card.
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("Play ball");
+				invalid.setVisible(false);
 				moveMade = "draw";
 			}
 		});
 		
-		//TODO: create function that updates the other players' num of cards
-		//Text displaying each player in the room and the number of cards each has
 		
 		hands = new int[3];
 		for(int i = 0; i<3; i++)
@@ -204,7 +215,7 @@ public class PlayerGUI{
 		panel.add(player1); panel.add(cards1); panel.add(pages);
 		
 		//display Player 2's text
-		BufferedImage p2 = ImageIO.read(new File("CardImages/p2.PNG"));
+		BufferedImage p2 = ImageIO.read(new File("src/CardImages/p2.PNG"));
 		Image resizep2 = p2.getScaledInstance(100, -1, 0);
 		player2.setIcon(new ImageIcon(resizep2));
 		player2.setIconTextGap(-184 + (8*(16-player2.getText().length()/2)));
@@ -215,7 +226,7 @@ public class PlayerGUI{
 		panel.add(player2); panel.add(cards2);
 		
 		//display Player 3's text
-		BufferedImage p3 = ImageIO.read(new File("CardImages/p3.PNG"));
+		BufferedImage p3 = ImageIO.read(new File("src/CardImages/p3.PNG"));
 		Image resizep3 = p3.getScaledInstance(100, -1, 0);
 		player3.setIcon(new ImageIcon(resizep3));
 		player3.setIconTextGap(-184 + (8*(16-player3.getText().length()/2)));
@@ -226,7 +237,7 @@ public class PlayerGUI{
 		panel.add(player3); panel.add(cards3);
 		
 		//display Player 4's text
-		BufferedImage p4 = ImageIO.read(new File("CardImages/p4.PNG"));
+		BufferedImage p4 = ImageIO.read(new File("src/CardImages/p4.PNG"));
 		Image resizep4 = p4.getScaledInstance(100, -1, 0);
 		player4.setIcon(new ImageIcon(resizep4));
 		player4.setIconTextGap(-184 + (8*(16-player4.getText().length()/2)));
@@ -258,71 +269,37 @@ public class PlayerGUI{
 	}
 	
 	//The main only creates a sample hand with the GUI, this can be altered for when we implement the Player class
-//	public static void main(String[] args) throws InterruptedException {
-//		try {
-//			ArrayList<String> cards = new ArrayList<String>();
-//			cards.add(("Wildcard"));
-//			cards.add(("yellow 4"));
-//			cards.add(("red 5"));
-//			cards.add("blue 4");
-//			cards.add("green 4");
-//			cards.add("red 1");
-//			cards.add("yellow 9");
-//			
-//			String[] others = {"Player2FillerTex", "Player3", "Player4"}; 
-//			PlayerGUI GUI = new PlayerGUI(cards, "I");
-//			GUI.setUsername(others);
-//			
-//			//check if You play the card
-//			GUI.playMove("I played yellow -1");
-//			GUI.playMove("I played red 1");
-//			GUI.playMove("I played draw");
-////			GUI.playMove("Player4", "draw");
-//			GUI.yourTurn();
-////			while (true) {
-////				String response = GUI.getMove();
-////				while(response.compareTo("None") == 0) {
-////					response = GUI.getMove();
-////					//timer reaches 90 sec, break;
-////					System.out.println(response);
-////					}
-////				if(response.compareTo("Draw") == 0) {
-////					//GUI.drawCard(newCard);
-//////					for(every player)
-//////						GUI.playMove(user, null, 0);
-////					//GUI.drawCard("Wildcard");
-////					System.out.println("B" + response);
-//////					GUI.moveMade = "None";
-////				}
-////				else {
-////					System.out.println("A" + response);
-////					GUI.setFaceUp(response);
-////					GUI.removeCard(response);
-////					
-//////					Thread.sleep(1000);
-//////					GUI.moveMade = "None";
-////				}
-////			}
-//			
-//			
-//			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
+	public static void main(String[] args) throws InterruptedException {
+		try {
+			ArrayList<String> cards = new ArrayList<String>();
+			cards.add(("wildcard"));
+			cards.add(("yellow 4"));
+			cards.add(("red 5"));
+			cards.add("blue 4");
+			cards.add("green 4");
+			cards.add("red 1");
+			cards.add("yellow 9");
+			cards.add("blue reverse");
+			
+			String[] others = {"Player2FillerTex", "Player3", "Player4"}; 
+			PlayerGUI GUI = new PlayerGUI(cards, "I", "blue 4");
+			GUI.setUsername(others);
+			//GUI.displayEnd("Plyaer3 won the game");
+			
+			
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 	//function that changes which card is displayed in the face up pile
-	//TODO: Card not String
 	private void setFaceUp(String temp) {
 		BufferedImage image;
 		try {
 			String[] card = temp.split("\s");
-			if(card[1].equals("-1")) {
-				card[1] = card[0];
-				card[0] = "wildcard";
-			}
-			image = ImageIO.read(new File("CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
+			image = ImageIO.read(new File("src/CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
 			Image resize = image.getScaledInstance(110, -1, 0);
 			blank.setIcon(new ImageIcon(resize));
 		}
@@ -341,10 +318,10 @@ public class PlayerGUI{
 					String newCard = names[i];
 					String[] card = newCard.split("\s");
 					if(card.length == 1) {
-						image = ImageIO.read(new File("CardImages/" + card[0] + ".PNG"));
+						image = ImageIO.read(new File("src/CardImages/" + card[0] + ".PNG"));
 					}
 					else {
-						image = ImageIO.read(new File("CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
+						image = ImageIO.read(new File("src/CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
 					}
 					Image resize = image.getScaledInstance(60, -1, 0);
 					curr.setIcon(new ImageIcon(resize));
@@ -354,7 +331,7 @@ public class PlayerGUI{
 			}
 			else {
 				try {
-					image = ImageIO.read(new File("CardImages/blank.PNG"));
+					image = ImageIO.read(new File("src/CardImages/blank.PNG"));
 					Image resizeBlank = image.getScaledInstance(60, -1, 0);
 					curr.setIcon(new ImageIcon(resizeBlank));
 				}
@@ -364,40 +341,15 @@ public class PlayerGUI{
 		pages.setText("Page " + (page+1) + " of " + ((names.length-1)/7 + 1));
 	}
 	
-	//remove a card from the drop down menu and from your playerHand array
-	private void removeCard(String temp) {
-		
-		hand.removeAllItems();
-		String[] parse = temp.split("\s");
-		if(parse[1].equals("-1"))
-			temp = "Wildcard";
-		String[] newNames = new String[names.length - 1];
-		boolean removed = false;
-		int j = 0;
-		for(int i = 0; i< newNames.length; i++) {
-			if(temp.compareTo(names[i]) == 0) {
-				if(!removed) {
-					removed = true;
-					j++;
-				}
-			}
-			newNames[i] = names[j++];
-			hand.addItem(newNames[i]);
-		}
-		if (!removed) {
-			hand.addItem(names[names.length-1]);
-			return;
-		}
-		this.names = newNames;
-		displayHand();
-		cards1.setText("Cards: " + names.length);
-	}
-	
 	//updates your hand variable
 	public void setHand(List<String> cards) {
+		System.out.println(cards.size());
+		hand.removeAllItems();
 		this.names = new String[cards.size()];
-		for(int i = 0; i <cards.size(); i++)
+		for(int i = 0; i <cards.size(); i++) {
 			names[i] = cards.get(i);
+			hand.addItem(names[i]);
+		}
 		
 		page = 0;
 		pages.setText("Page " + (page+1) + " of " + ((names.length-1)/7 + 1));
@@ -431,11 +383,15 @@ public class PlayerGUI{
 	}
 	
 	public void playMove(String moveMade) {
+		System.out.println(moveMade);
 		String[] parsing = moveMade.split("\s");
 		String user = parsing[0];
 		String played;
-		if(parsing.length == 3) {
+		if(parsing[2].equals("draw")) {
 			played = "draw";
+		}
+		else if(parsing.length == 3) {
+			played = "Wildcard " + parsing[2];
 		}
 		else {
 			played = parsing[2] + " " + parsing[3];
@@ -445,8 +401,6 @@ public class PlayerGUI{
 		String user2 = user + " has ";
 		if(user.equals(myName)) {
 			user2 = "You have ";
-			if(!played.equals("draw"))
-				removeCard(played);
 		}
 		if(played.equals("draw")) {
 			chat = user2 + "drawn a card.";
@@ -457,11 +411,15 @@ public class PlayerGUI{
 			}
 		}
 		else {
-			response = played;
-			String[] wildcard = response.split("\s");
-			if(wildcard[1].equals("-1"))
-				response = "Wildcard " + wildcard[0];
-			chat = user2 + "played " + response + ".";
+			String[] wildcard = played.split("\s");
+			if(wildcard[0].equals("Wildcard")) {
+				response = wildcard[1] + " -1";
+				this.currCard = response;
+			}
+			else {
+				this.currCard = played;
+			}
+			chat = user2 + "played " + played + ".";
 			setFaceUp(played);
 			for(int i = 0; i < 3; i++) {
 				if(user.compareTo(usernames[i]) == 0) {
@@ -477,16 +435,6 @@ public class PlayerGUI{
 	}
 	public void yourTurn() {
 		tracker.setText(tracker.getText() + " Your turn.");
-	}
-	
-	public void drawCard(String newCard) {
-		String[] newHand = new String[names.length + 1];
-		newHand[0] = newCard;
-		for(int i = 1; i< newHand.length; i++)
-			newHand[i] = names[i-1];
-		names = newHand;
-		cards1.setText("Cards: " + names.length);
-		displayHand();
 	}
 	
 	//helper function to determine which card needs to be updated
@@ -512,7 +460,6 @@ public class PlayerGUI{
 	}
 
 	public String getMove() {
-		while(moveMade.equals("None")) {}
 		return moveMade;
 	}
 	public void setMove() {
@@ -523,5 +470,33 @@ public class PlayerGUI{
 		cards2.setText("Cards: " + hands[0]);
 		cards3.setText("Cards: " + hands[1]);
 		cards4.setText("Cards: " + hands[2]);
+		cards1.setText("Cards: " + names.length);
+	}
+	public void displayEnd(String winner) {
+		boolean youWon = false;
+		String[] w = winner.split("\s");
+		String user = w[0];
+		if(w[0].equals(myName)) {
+			user = "You";
+			youWon = true;
+		}
+
+		hand0.setVisible(false); hand1.setVisible(false); hand2.setVisible(false); hand3.setVisible(false); hand4.setVisible(false); hand5.setVisible(false); hand6.setVisible(false);
+		cards1.setVisible(false); cards2.setVisible(false); cards3.setVisible(false); cards4.setVisible(false);
+		play.setVisible(false); hand.setVisible(false); nextPage.setVisible(false); pages.setVisible(false); tracker.setVisible(false);
+		invalid.setVisible(false); select.setVisible(false); colors.setVisible(false); wildcard.setVisible(false);
+		player1.setVisible(false); player2.setVisible(false); player3.setVisible(false); player4.setVisible(false);
+		
+
+		String winText = user + winUser.getText();
+		System.out.println(winText.length());
+		winUser.setBounds((int)(320 - (6*winText.length())), 300, 580, 100);
+		winUser.setText("<html><div style='text-align: center;'>" + winText + "</div></html>");
+		gameOver.setVisible(true); winUser.setVisible(true);
+		if(!youWon) {
+			sorry.setVisible(true);
+		}
+		
+		
 	}
 }
