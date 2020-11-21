@@ -1,5 +1,6 @@
 package server;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import GameTable.Player;
 
@@ -22,28 +23,21 @@ public class loginThread extends Thread {
 	public void run() {
 		
 		try { //isguest bool in player
-			String guestOrUser = (String) player.ois.readObject();
-			if(guestOrUser.equals("user"))
+			
+			ArrayList<String> currPlayers = new ArrayList<String>();
+			
+			for(int i = 0; i < server.playerList.size(); ++i)
 			{
-				while(!loggedIn)
-				{
-					String username = (String) player.ois.readObject();
-					String password = (String) player.ois.readObject();
-					
-					//if found, send good message, else send incorrect login **database**
-					player.SetName(username);
-					loggedIn = true;
-					player.oos.writeObject("authenticated");
-				}
-			}
-			else
-			{
-				//is a guest
-				player.SetName("Player"+(int)(Math.random() * (5000) +1));
-				player.oos.writeObject(player.GetName());
-				player.oos.flush();
+				currPlayers.add(server.playerList.get(i).GetName());
 			}
 			
+			player.oos.writeObject(currPlayers);
+			player.oos.flush();
+			
+			String username = (String) player.ois.readObject();
+            player.SetName(username);
+            player.oos.flush();
+            
 			//after authenticated, add to server's player list and update num players on server
 			server.playerList.add(player);
 		    System.out.println("New player added");
