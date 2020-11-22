@@ -15,24 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-//
-//
-//TODO:  setFaceUp is for the playerCLient not me, print out the winner
-//Only play viable moves
-//Wildcard doesn't display to others, doesn't leave drop down
-//My card number doesnt decrement
-//Draw card does not change drop down
-//Add Valid Move function
-//
-//Winning is broken :(
-//Exception in thread "main" java.lang.NegativeArraySizeException: -1
-//at UnoProject/project.server.PlayerGUI.removeCard(PlayerGUI.java:373)
-//at UnoProject/project.server.PlayerGUI.playMove(PlayerGUI.java:448)
-//at UnoProject/project.server.PlayerClient.<init>(PlayerClient.java:203)
-//at UnoProject/project.server.PlayerClient.main(PlayerClient.java:32)
-//
-//
-//
+
 
 public class PlayerGUI{
 	private String moveMade = "None";
@@ -139,10 +122,6 @@ public class PlayerGUI{
 		hand = new JComboBox();
 		setHand(handIn);
 		
-		//create drop down menu based on the array of cards provided
-
-		
-		//TODO: implement function that determines if the card selected is a valid play
 		//when the player clicks the Play button, the card selected by the drop down is played
 		play.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -171,9 +150,7 @@ public class PlayerGUI{
 						else {
 							invalid.setVisible(true);
 						}
-					//put the selected card in the face up pile and remove from your hand
-//						setFaceUp(answer);
-//						removeCard(answer);
+
 					}
 				}
 				
@@ -204,7 +181,6 @@ public class PlayerGUI{
 			}
 		});
 		
-		//TODO: call another function that tells the Server that this player needs another card to add to their hand
 		//when you click the face down deck, you should draw a card. Hasn't been created yet so it says Play Ball because I was watching a Dodgers game
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -214,7 +190,6 @@ public class PlayerGUI{
 			}
 		});
 		
-		//TODO: create function that updates the other players' num of cards
 		//Text displaying each player in the room and the number of cards each has
 		
 		hands = new int[3];
@@ -315,7 +290,6 @@ public class PlayerGUI{
 	}
 	
 	//function that changes which card is displayed in the face up pile
-	//TODO: Card not String
 	private void setFaceUp(String temp) {
 		BufferedImage image;
 		try {
