@@ -1,3 +1,4 @@
+package Database;
 import java.sql.*;
 
 /*
@@ -24,23 +25,22 @@ public class db_connect {
 	// Adds a new user to the database
 	public static void addUser(String user, String pwd) throws SQLException
 	{
-		// MySQL statement
 		String sql = "INSERT INTO Users (Username, Password, Wins, Losses) VALUES (?,?,0,0)";
 		
-		// Connect to the DB
-		Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+		try(Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+				PreparedStatement ps = conn.prepareStatement(sql);) {
 			
-		// Add "user" and "pwd" to SQL statement
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setString(1, user);
-		ps.setString(2, pwd);
-		
-		// Execute DB update
-		ps.executeUpdate();
-		
-		// Close resources
-		conn.close();
-		ps.close();
+			// Add "user" and "pwd" to SQL statement
+			ps.setString(1, user);
+			ps.setString(2, pwd);
+			
+			// Execute DB update
+			ps.executeUpdate();
+			
+		}
+		catch (SQLException e) {
+			throw new SQLException(e.getMessage());
+		}
 	}
 	
 	// Increments the total number of a user's wins by one
@@ -60,19 +60,19 @@ public class db_connect {
 	// Helper for addWin and addLoss to reduce redundant code
 	public static void addHelper(String user, String sql) throws SQLException
 	{
-		// Connect to the DB
-		Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+		try(Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+				PreparedStatement ps = conn.prepareStatement(sql);) {
 			
-		// Add "user" to SQL statement
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setString(1, user);
-		
-		// Execute DB update
-		ps.executeUpdate();
-		
-		// Close resources
-		conn.close();
-		ps.close();
+			// Add "user" to SQL statement
+			ps.setString(1, user);
+			
+			// Execute DB update
+			ps.executeUpdate();
+			
+		}
+		catch (SQLException e) {
+			throw new SQLException(e.getMessage());
+		}
 	}
 	
 	// Output the number of wins a user has
@@ -92,24 +92,25 @@ public class db_connect {
 	// Helper for getWins and getLosses to reduce redundant code
 	public static int getHelper(String user, String sql) throws SQLException
 	{
-		// Connect to the DB
-		Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
-			
-		// Add "user" to SQL statement
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setString(1, user);
-		
-		// Get the result set
-		ResultSet rs = ps.executeQuery();
-		
-		// Either get the number of wins/losses or throw an exception
 		int answer = 0;
-		if(rs.next()) answer = rs.getInt(1);
-		else throw new SQLException("User does not exist");
 		
-		// Close resources
-		conn.close();
-		ps.close();
+		try(Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+				PreparedStatement ps = conn.prepareStatement(sql);) {
+			
+			// Add "user" to SQL statement
+			ps.setString(1, user);
+			
+			// Get the result set
+			ResultSet rs = ps.executeQuery();
+			
+			// Either get the number of wins/losses or throw an exception
+			if(rs.next()) answer = rs.getInt(1);
+			else throw new SQLException("User does not exist");
+			
+		}
+		catch (SQLException e) {
+			throw new SQLException(e.getMessage());
+		}
 		
 		// Return the number of wins/losses
 		return answer;
@@ -122,29 +123,29 @@ public class db_connect {
 		String sql = "SELECT Username, Password FROM Users WHERE Username = ?;";
 		boolean answer = false;
 		
-		// Connect to the DB
-		Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+		try(Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+				PreparedStatement ps = conn.prepareStatement(sql);) {
 			
-		// Add "user" and "pwd" to SQL statement
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setString(1, user);
-		
-		// Get the result set
-		ResultSet rs = ps.executeQuery();
-		if(rs.next())
-		{
-			// the user is found
-			if(user.compareTo(rs.getString("Username")) == 0 && pwd.compareTo(rs.getString("Password")) == 0)
+			// Add "user" to SQL statement
+			ps.setString(1, user);
+			
+			// Get the result set
+			ResultSet rs = ps.executeQuery();
+			if(rs.next())
 			{
-				// the password is valid
-				answer = true;
+				// the user is found
+				if(user.compareTo(rs.getString("Username")) == 0 && pwd.compareTo(rs.getString("Password")) == 0)
+				{
+					// the password is valid
+					answer = true;
+				}
 			}
+			else throw new SQLException("User does not exist");
+			
 		}
-		else throw new SQLException("User does not exist");
-		
-		// Close resources
-		conn.close();
-		ps.close();
+		catch (SQLException e) {
+			throw new SQLException(e.getMessage());
+		}
 		
 		// return whether the user is valid or not
 		return answer;
@@ -158,35 +159,35 @@ public class db_connect {
 		String sql = "SELECT COUNT(*) as count FROM Users WHERE Username = ?;";
 		boolean answer = false;
 		
-		// Connect to the DB
-		Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+		try(Connection conn = DriverManager.getConnection(db, db_user, db_pwd);
+				PreparedStatement ps = conn.prepareStatement(sql);) {
 			
-		// Add "user" and "pwd" to SQL statement
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setString(1, user);
-		
-		// Get the result set
-		ResultSet rs = ps.executeQuery();
-		rs.next();
-		if (rs.getInt("count") == 1) answer = true;
-		
-		// Close resources
-		conn.close();
-		ps.close();
+			// Add "user" to SQL statement
+			ps.setString(1, user);
+			
+			// Get the result set
+			ResultSet rs = ps.executeQuery();
+			rs.next();
+			if (rs.getInt("count") == 1) answer = true;
+			
+		}
+		catch (SQLException e) {
+			throw new SQLException(e.getMessage());
+		}
 		
 		// return whether the user is valid or not
 		return answer;
 	}
 	
 	public static Boolean checkAlphaNum(String s)
-	{
-		for(int i = 0; i < s.length(); ++i)
-		{
-		    if(!Character.isLetterOrDigit(s.charAt(i)))
-		    {
-			return false;
-		    }
-		}
-		return true;
-	}
+    {
+        for(int i = 0; i < s.length(); ++i)
+        {
+            if(!Character.isLetterOrDigit(s.charAt(i)))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }
