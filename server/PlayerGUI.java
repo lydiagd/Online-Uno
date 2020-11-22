@@ -138,7 +138,6 @@ public class PlayerGUI{
 					else{
 						String[] query = currCard.split("\s");
 						String[] selection = answer.split("\s");
-						System.out.println(currCard + "  " + answer);
 						if(query[0].equals(selection[0]) || query[1].equals(selection[1])) {
 							invalid.setVisible(false);
 							select.setVisible(false);
@@ -181,10 +180,9 @@ public class PlayerGUI{
 			}
 		});
 		
-		//when you click the face down deck, you should draw a card. Hasn't been created yet so it says Play Ball because I was watching a Dodgers game
+		//when you click the face down deck, you should draw a card.
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//System.out.println("Play ball");
 				invalid.setVisible(false);
 				moveMade = "draw";
 			}
@@ -406,7 +404,6 @@ public class PlayerGUI{
 	}
 	
 	public void playMove(String moveMade) {
-		System.out.println(moveMade);
 		String[] parsing = moveMade.split("\s");
 		String user = parsing[0];
 		String played;
@@ -447,9 +444,6 @@ public class PlayerGUI{
 			for(int i = 0; i < 3; i++) {
 				if(user.compareTo(usernames[i]) == 0) {
 					hands[i] = hands[i] - 1;
-					if(hands[i] == 0) {
-						System.out.println("You lose.");
-					}
 				}
 			}
 		}
@@ -513,7 +507,6 @@ public class PlayerGUI{
 		//17,220  30,140
 		//80/13 y = -6x + 320
 		String winText = user + winUser.getText();
-		System.out.println(winText.length());
 		winUser.setBounds((int)(320 - (6*winText.length())), 300, 580, 100);
 		winUser.setText("<html><div style='text-align: center;'>" + winText + "</div></html>");
 		gameOver.setVisible(true); winUser.setVisible(true);
