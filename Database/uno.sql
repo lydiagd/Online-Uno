@@ -10,6 +10,3 @@ CREATE TABLE Users (
     Losses INT,
     PRIMARY KEY (ID)
 );
-
-INSERT INTO Users (Username, Password, Wins, Losses)
-VALUES ("Sanity Check", "badPassword", 0, 0);

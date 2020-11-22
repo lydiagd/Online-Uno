@@ -1,4 +1,4 @@
-package GameTable;
+    package GameTable;
 
 import java.util.ArrayList;
 

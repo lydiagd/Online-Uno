@@ -28,7 +28,7 @@ public class PlayerClient{
 
   
   
-  @SuppressWarnings({ "unchecked", "unused" })
+  @SuppressWarnings({ "unused" })
   
   public static void main(String[] args)
   {
@@ -44,9 +44,10 @@ public PlayerClient() {
               String ans = null;
               try {
                   System.out.print("Enter the server hostname: ");
-                  String hostname = sc.nextLine();
+                  String hostname = "localhost";//sc.nextLine();
                   System.out.print("Enter the server port number: ");
-                  ans = sc.nextLine();
+                  ans = "1234";//sc.nextLine();
+                  
                   int port = Integer.parseInt(ans);
                   s = new Socket(hostname, port);
                   System.out.println();
@@ -68,7 +69,7 @@ public PlayerClient() {
             //get login credentials
             ClientLogin cl = new ClientLogin();
             username = cl.getLoginCred(oos, ois, sc); //pass in output and input stream with scanner
-            
+            System.out.println("PlayerClient: " + username);
             //start game sequence
             while (true) {
              //signal game starts
@@ -176,12 +177,12 @@ public PlayerClient() {
             
         }  
 
-        while(true) { } //keep PlayerClient running so gui doesn't terminate
+        //while(true) { } //keep PlayerClient running so gui doesn't terminate
  
         } catch (SocketException se) {
             System.out.println(" Server dropped connection");
         } catch (IOException ioe) {
-            ioe.printStackTrace();
+        	System.out.println("Server connection error, please try again");
         } catch (ClassNotFoundException cnfe) {
             System.out.println(cnfe.getMessage());
         } catch (InterruptedException e) {

@@ -171,15 +171,32 @@ public class ClientLogin {
 				}
 			}
 			
-			// send username back to loginThread
-			oos.writeObject(username);
-			oos.flush();
-			
-			// output current number of players
-			Integer num = (Integer) ois.readObject();
-			
-	        System.out.println("Welcome " + username + " to Online Uno! There are "+num+" players on the server");
+			// add W/L ratio to username
+            String username2 = username;
+            double x = 1;
+            try {
+                if(db_connect.userExists(username))
+                {
+                    double wins = db_connect.getWins(username);
+                    double losses = db_connect.getLosses(username);
+                    if(losses!=0) x = wins / losses;
+                    else x = wins;
+                    x = ((int)(x*100))/100.0;
+                    username2 = username + "(" + x + "W/L)";
+                }
+                
+            }
+            catch(Exception e) { }
+            System.out.println(username2);
+            // send username back to loginThread
+            oos.writeObject(username2);
+            oos.flush();
 
+            // output current number of players
+            Integer num = (Integer) ois.readObject();
+
+            System.out.println("Welcome " + username + " to Online Uno! There are "+num+" players on the server");
+            username = username2;
 		} 
 		
 		finally {

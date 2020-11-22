@@ -35,6 +35,7 @@ public class loginThread extends Thread {
 			player.oos.flush();
 			
 			String username = (String) player.ois.readObject();
+			System.out.println(username);
             player.SetName(username);
             player.oos.flush();
             

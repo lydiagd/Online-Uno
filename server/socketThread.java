@@ -25,7 +25,7 @@ public class socketThread extends Thread {
 		
 		while(true) {
 			
-			System.out.println("Searching for connection");
+			//System.out.println("Searching for connection");
 		     try {
 				  s = ss.accept();
 				  newPlayerJoined = true;

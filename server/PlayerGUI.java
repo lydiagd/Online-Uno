@@ -15,7 +15,24 @@ import java.util.concurrent.TimeUnit;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-
+//
+//
+//TODO:  setFaceUp is for the playerCLient not me, print out the winner
+//Only play viable moves
+//Wildcard doesn't display to others, doesn't leave drop down
+//My card number doesnt decrement
+//Draw card does not change drop down
+//Add Valid Move function
+//
+//Winning is broken :(
+//Exception in thread "main" java.lang.NegativeArraySizeException: -1
+//at UnoProject/project.server.PlayerGUI.removeCard(PlayerGUI.java:373)
+//at UnoProject/project.server.PlayerGUI.playMove(PlayerGUI.java:448)
+//at UnoProject/project.server.PlayerClient.<init>(PlayerClient.java:203)
+//at UnoProject/project.server.PlayerClient.main(PlayerClient.java:32)
+//
+//
+//
 
 public class PlayerGUI{
 	private String moveMade = "None";
@@ -96,14 +113,14 @@ public class PlayerGUI{
 		panel.add(tracker);
 		
 		//sets up the image of where the face up cards are going to be placed
-		BufferedImage blankIm = ImageIO.read(new File("src/CardImages/blank.PNG"));
+		BufferedImage blankIm = ImageIO.read(new File("CardImages/blank.PNG"));
 		Image resizeBlank = blankIm.getScaledInstance(100, -1, 0);
 		blank = new JLabel(new ImageIcon(resizeBlank));
 		blank.setBounds(355, 140, 110, 200); panel.add(blank);
 		setFaceUp(firstCard);
 		
 		//sets up the image of where the face down deck is going to be placed
-		BufferedImage backIm = ImageIO.read(new File("src/CardImages/back.PNG"));
+		BufferedImage backIm = ImageIO.read(new File("CardImages/back.PNG"));
 		Image resizeBack = backIm.getScaledInstance(100, -1, 0);
 		back = new JButton(new ImageIcon(resizeBack));
 		back.setBounds(225, 165, 100, 150); panel.add(back);
@@ -187,15 +204,18 @@ public class PlayerGUI{
 			}
 		});
 		
-	
-		//when you click the face down deck, you should draw a card.
+		//TODO: call another function that tells the Server that this player needs another card to add to their hand
+		//when you click the face down deck, you should draw a card. Hasn't been created yet so it says Play Ball because I was watching a Dodgers game
 		back.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//System.out.println("Play ball");
 				invalid.setVisible(false);
 				moveMade = "draw";
 			}
 		});
 		
+		//TODO: create function that updates the other players' num of cards
+		//Text displaying each player in the room and the number of cards each has
 		
 		hands = new int[3];
 		for(int i = 0; i<3; i++)
@@ -215,7 +235,7 @@ public class PlayerGUI{
 		panel.add(player1); panel.add(cards1); panel.add(pages);
 		
 		//display Player 2's text
-		BufferedImage p2 = ImageIO.read(new File("src/CardImages/p2.PNG"));
+		BufferedImage p2 = ImageIO.read(new File("CardImages/p2.PNG"));
 		Image resizep2 = p2.getScaledInstance(100, -1, 0);
 		player2.setIcon(new ImageIcon(resizep2));
 		player2.setIconTextGap(-184 + (8*(16-player2.getText().length()/2)));
@@ -226,7 +246,7 @@ public class PlayerGUI{
 		panel.add(player2); panel.add(cards2);
 		
 		//display Player 3's text
-		BufferedImage p3 = ImageIO.read(new File("src/CardImages/p3.PNG"));
+		BufferedImage p3 = ImageIO.read(new File("CardImages/p3.PNG"));
 		Image resizep3 = p3.getScaledInstance(100, -1, 0);
 		player3.setIcon(new ImageIcon(resizep3));
 		player3.setIconTextGap(-184 + (8*(16-player3.getText().length()/2)));
@@ -237,7 +257,7 @@ public class PlayerGUI{
 		panel.add(player3); panel.add(cards3);
 		
 		//display Player 4's text
-		BufferedImage p4 = ImageIO.read(new File("src/CardImages/p4.PNG"));
+		BufferedImage p4 = ImageIO.read(new File("CardImages/p4.PNG"));
 		Image resizep4 = p4.getScaledInstance(100, -1, 0);
 		player4.setIcon(new ImageIcon(resizep4));
 		player4.setIconTextGap(-184 + (8*(16-player4.getText().length()/2)));
@@ -295,11 +315,12 @@ public class PlayerGUI{
 	}
 	
 	//function that changes which card is displayed in the face up pile
+	//TODO: Card not String
 	private void setFaceUp(String temp) {
 		BufferedImage image;
 		try {
 			String[] card = temp.split("\s");
-			image = ImageIO.read(new File("src/CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
+			image = ImageIO.read(new File("CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
 			Image resize = image.getScaledInstance(110, -1, 0);
 			blank.setIcon(new ImageIcon(resize));
 		}
@@ -318,10 +339,10 @@ public class PlayerGUI{
 					String newCard = names[i];
 					String[] card = newCard.split("\s");
 					if(card.length == 1) {
-						image = ImageIO.read(new File("src/CardImages/" + card[0] + ".PNG"));
+						image = ImageIO.read(new File("CardImages/" + card[0] + ".PNG"));
 					}
 					else {
-						image = ImageIO.read(new File("src/CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
+						image = ImageIO.read(new File("CardImages/" + card[0].toLowerCase() + card[1] + ".PNG"));
 					}
 					Image resize = image.getScaledInstance(60, -1, 0);
 					curr.setIcon(new ImageIcon(resize));
@@ -331,7 +352,7 @@ public class PlayerGUI{
 			}
 			else {
 				try {
-					image = ImageIO.read(new File("src/CardImages/blank.PNG"));
+					image = ImageIO.read(new File("CardImages/blank.PNG"));
 					Image resizeBlank = image.getScaledInstance(60, -1, 0);
 					curr.setIcon(new ImageIcon(resizeBlank));
 				}
@@ -341,9 +362,37 @@ public class PlayerGUI{
 		pages.setText("Page " + (page+1) + " of " + ((names.length-1)/7 + 1));
 	}
 	
+	//remove a card from the drop down menu and from your playerHand array
+	private void removeCard(String temp) {
+		
+		hand.removeAllItems();
+		String[] parse = temp.split("\s");
+		if(parse[1].equals("-1"))
+			temp = "Wildcard";
+		String[] newNames = new String[names.length - 1];
+		boolean removed = false;
+		int j = 0;
+		for(int i = 0; i< newNames.length; i++) {
+			if(temp.compareTo(names[i]) == 0) {
+				if(!removed) {
+					removed = true;
+					j++;
+				}
+			}
+			newNames[i] = names[j++];
+			hand.addItem(newNames[i]);
+		}
+		if (!removed) {
+			hand.addItem(names[names.length-1]);
+			return;
+		}
+		this.names = newNames;
+		displayHand();
+		cards1.setText("Cards: " + names.length);
+	}
+	
 	//updates your hand variable
 	public void setHand(List<String> cards) {
-		System.out.println(cards.size());
 		hand.removeAllItems();
 		this.names = new String[cards.size()];
 		for(int i = 0; i <cards.size(); i++) {
@@ -487,7 +536,8 @@ public class PlayerGUI{
 		invalid.setVisible(false); select.setVisible(false); colors.setVisible(false); wildcard.setVisible(false);
 		player1.setVisible(false); player2.setVisible(false); player3.setVisible(false); player4.setVisible(false);
 		
-
+		//17,220  30,140
+		//80/13 y = -6x + 320
 		String winText = user + winUser.getText();
 		System.out.println(winText.length());
 		winUser.setBounds((int)(320 - (6*winText.length())), 300, 580, 100);
