@@ -18,7 +18,7 @@ public class db_connect {
 	
 	// Database settings
 	// NOTE: Change this if your DB has different settings
-	private static String db = "jdbc:mysql://localhost/uno?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=America/Los_Angeles";
+	private static String db = "jdbc:mysql://localhost/uno";
 	private static String db_user = "root";
 	private static String db_pwd = "root";
 	
