@@ -1,5 +1,6 @@
 # Online-Uno
 CS201 Group Project - Online Uno
+Final code uploaded to this repo: https://github.com/cmkuo12/Desktop-Uno 
 
 ## Game Overview
 A turn-based card game hosted via the terminal and a graphical user interface. Players can connect to a server, and when there are 4 available players a new game will start. The deck of cards include four color attributes, numbered 0-9, along with some wildcards that can change to any color.
